@@ -28,6 +28,8 @@ These map naturally onto every xUnit feature worth knowing without forcing it.
 
 Mark phases with `[x]` as you complete them so the file becomes a record of what you've learned.
 
+> **Setup note:** This project uses Rider as an editor only — builds and test runs are all CLI (`dotnet test`, `dotnet watch test`, `dotnet run --project ...`). See [`phases/phase-00-setup.md`](phases/phase-00-setup.md) for context. Rider notes throughout this plan that depend on the **test-runner UI** or the **debugger** do not apply in this setup; navigation, refactor, decompile, and analyzer notes still do.
+
 ---
 
 ## Phase 0 — Project setup & first run  `[ ]`

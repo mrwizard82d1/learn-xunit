@@ -15,6 +15,9 @@
   - Rationale: learn what we'll actually use going forward; accept slightly more setup work.
 - **Solution name:** `LearnXunit` (PascalCase to match C# conventions).
 - **Layout:** `src/Ledger` for the production class library, `tests/Ledger.Tests` for the test project. Modern .NET convention; worth getting into the habit.
+- **Rider usage: editor only.** All builds and test runs go through `dotnet` from the Ubuntu CLI. Rider is used for code intelligence, navigation, refactoring, and reading source — not for running or debugging tests.
+  - Reason: project lives in WSL2 Ubuntu (separate personal GitHub identity, and keeping personal projects out of the Windows-side backup scope); Rider runs natively on Windows. Crossing that boundary for build/run produces brittle errors (targeting-pack mismatches on the Windows side, file-permission issues across the WSL ↔ Windows seam).
+  - Implication: skip Rider notes elsewhere in the tutorial that depend on the test-runner UI or the Rider debugger. Navigation/editor Rider notes still apply.
 
 ## Goal
 
@@ -106,26 +109,34 @@ The first two register both projects in the solution file (so Rider sees them wh
 dotnet test
 ```
 
-The v3 template scaffolds one or two passing sample tests (likely in `UnitTest1.cs`). You should see a green run with the test passing. Then **open the solution in Rider** and run the same test from the gutter icon (`Shift+F10` with the caret on the test method, IntelliJ keymap).
+The v3 template scaffolds one or two passing sample tests (likely in `UnitTest1.cs`). You should see a green run with the test passing.
 
-Compare the two surfaces:
+**Then try invoking the test project directly:**
 
-- **CLI:** one-line summary, output buffered until the run ends.
-- **Rider:** tree view, per-test timing, captured output panel, ability to re-run a single case.
+```
+dotnet run --project tests/Ledger.Tests
+```
 
-That difference is exactly what makes Rider's runner pleasant once we get to `[Theory]` cases in Phase 3.
+Same tests, same outcome — but invoked as the **MTP test executable** rather than via the `dotnet test` orchestrator. Output formatting will be slightly different. This is the host-model distinction from Step 4 made concrete: the test project *is* the runner.
+
+**Optional, but worth knowing now:** `dotnet watch test` runs the suite continuously, re-executing on every file save. Run it in a second terminal pane while you edit for a tight feedback loop — the closest CLI equivalent to a live test runner. Useful from Phase 1 onward.
 
 ### Step 7 — Make it fail  `[ ]`
 
-In the sample test file, change the assertion so the test fails — for example, `Assert.True(true)` → `Assert.True(false, "this is intentional")`. Run again from both surfaces.
+In the sample test file, change the assertion so the test fails — for example, `Assert.True(true)` → `Assert.True(false, "this is intentional")`. Run it:
+
+```
+dotnet test
+echo $?
+```
 
 What to notice:
 
-- The exception type (`Xunit.Sdk.TrueException` or similar) and how the message is formatted.
-- Rider's failure output and whether it offers clickable navigation back to the failing line.
-- The exit code of `dotnet test` — run `echo $?` right after; non-zero on failure. This is what CI looks at.
+- The exception type (`Xunit.Sdk.TrueException` or similar) and how the message is formatted. xUnit failure messages read **"Expected ... Actual ..."** — that ordering will matter when we hit argument-order pitfalls in Phase 1.
+- The location info in the failure output — file path + line number. Most modern terminals make that clickable; Rider opens to the line if you click through.
+- The exit code from `echo $?` is **non-zero** on test failure (typically `1`). This is the contract CI relies on; the exit code is how `dotnet test` becomes a build gate.
 
-Then revert the assertion so the test passes again.
+Then revert the assertion so the test passes again, and confirm `echo $?` returns `0`.
 
 ---
 
