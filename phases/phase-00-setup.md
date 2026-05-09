@@ -24,7 +24,7 @@ Get a working solution with a passing test and a deliberately failing test. Unde
 
 ## Steps
 
-### Step 1 — Install the xUnit v3 templates  `[ ]`
+### Step 1 — Install the xUnit v3 templates  `[x]`
 
 ```
 dotnet new install xunit.v3.templates
@@ -38,7 +38,7 @@ dotnet new list xunit
 
 You should now see `xunit3` alongside the v2 `xunit` template.
 
-### Step 2 — Create the solution  `[ ]`
+### Step 2 — Create the solution  `[x]`
 
 From the repo root (`/home/larryjones/professional/projects/learn-xunit`):
 
@@ -48,7 +48,7 @@ dotnet new sln -n LearnXunit
 
 The repo is the *learning environment*; the *domain under test* is the Ledger. Naming choice is yours — adjust later commands if you change it.
 
-### Step 3 — Create the production project  `[ ]`
+### Step 3 — Create the production project  `[x]`
 
 ```
 dotnet new classlib -n Ledger -o src/Ledger
