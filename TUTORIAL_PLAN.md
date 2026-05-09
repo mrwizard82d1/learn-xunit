@@ -32,7 +32,7 @@ Mark phases with `[x]` as you complete them so the file becomes a record of what
 
 ---
 
-## Phase 0 — Project setup & first run  `[ ]`
+## Phase 0 — Project setup & first run  `[x]`
 
 **Goal:** Get a working solution with one passing and one failing test, and understand the runner ergonomics in both CLI and Rider.
 

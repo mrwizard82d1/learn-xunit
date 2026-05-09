@@ -121,7 +121,7 @@ Same tests, same outcome — but invoked as the **MTP test executable** rather t
 
 **Optional, but worth knowing now:** `dotnet watch test` runs the suite continuously, re-executing on every file save. Run it in a second terminal pane while you edit for a tight feedback loop — the closest CLI equivalent to a live test runner. Useful from Phase 1 onward.
 
-### Step 7 — Make it fail  `[ ]`
+### Step 7 — Make it fail  `[x]`
 
 In the sample test file, change the assertion so the test fails — for example, `Assert.True(true)` → `Assert.True(false, "this is intentional")`. Run it:
 
