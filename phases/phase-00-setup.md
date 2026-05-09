@@ -64,11 +64,27 @@ dotnet new xunit3 -o tests/Ledger.Tests
 
 `-n` is omitted: `dotnet new` uses the output directory's leaf name as the project name, giving `Ledger.Tests`.
 
-**Before doing anything else, open `tests/Ledger.Tests/Ledger.Tests.csproj` in Rider and read it.** Look for:
+**Before doing anything else, open `tests/Ledger.Tests/Ledger.Tests.csproj` in Rider and read it.** The xUnit v3 template defaults to the **Microsoft Testing Platform (MTP)** rather than the older VSTest host model, which keeps the file remarkably small.
 
-- The `<PackageReference>` entries — note that v3 uses `xunit.v3` (not `xunit`) as the package name. Compare to v2, which uses `xunit`.
-- The `xunit.runner.visualstudio` reference — this is what makes `dotnet test` and Rider's runner discover xUnit tests. Without it, your tests exist but nothing finds them.
-- The `Microsoft.NET.Test.Sdk` reference — the generic test host. Required for any test framework, not xUnit-specific.
+Things you should find:
+
+- **`<PackageReference Include="xunit.v3.mtp-v2" />`** — the only package reference. A *meta-package* that transitively brings in `xunit.v3` itself, the in-process MTP runner, and the MSBuild integration that makes everything work. The `-v2` refers to **Microsoft Testing Platform v2** (the second-generation MTP integration shape), **not** xUnit v2.
+- **`<Using Include="Xunit" />`** — an MSBuild *implicit using*; the compiler injects `using Xunit;` into every `.cs` file in this project so you never have to write it.
+- **`<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />`** — and a corresponding `xunit.runner.json` file in the project. Runner configuration (parallelism, display name format, timeout); we edit it in Phase 8.
+- **`<TestingPlatformDotnetTestSupport>true</...>`** in the `<PropertyGroup>` — the property that tells the build system "let `dotnet test` invoke this project as an MTP test executable." (You may have expected `<UseMicrosoftTestingPlatform>` instead; the meta-package handles MTP enablement implicitly via its MSBuild props, so the `TestingPlatformDotnetTestSupport` property is what's left for you to control.)
+- **`<OutputType>Exe</OutputType>`** — either present explicitly in the `<PropertyGroup>` or contributed implicitly by the meta-package. Under MTP, test projects are *executables*: the project hosts its own runner.
+
+Things you will **not** find (and which would appear in a v2 / VSTest test project):
+
+- `Microsoft.NET.Test.Sdk` — the generic VSTest host process. Not needed under MTP; the host *is* your project.
+- `xunit.runner.visualstudio` — the VSTest adapter for xUnit. Not needed because there is no VSTest host to adapt to. (The "Visual Studio" branding on this package is historical; in v2 setups it's the adapter every VSTest-based runner uses, including Rider, VS Code, Visual Studio, and `dotnet test`.)
+
+#### A note on the host model
+
+Worth holding this distinction in your head; it shapes a lot of what follows in xUnit v3.
+
+- **VSTest model** (xUnit v2, NUnit, classic MSTest): test project is a **class library**. `Microsoft.NET.Test.Sdk` provides a generic host process. An adapter (`xunit.runner.visualstudio`, `NUnit3TestAdapter`, etc.) bridges the framework to that host. `dotnet test` orchestrates.
+- **MTP model** (xUnit v3 default): test project is an **executable** that embeds its own runner. No separate host. `dotnet test` simply runs the executable. You can also run it directly: `dotnet run --project tests/Ledger.Tests`. Try this once after Step 6 — it's the moment MTP "clicks."
 
 This is the cleanest moment in the whole tutorial to see the package surface area; once we add more, it gets noisier.
 
