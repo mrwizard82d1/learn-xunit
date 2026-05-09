@@ -190,4 +190,10 @@ Irritating, but useful to know.
 
 Claude recommended scanning the text to look for `Failed: 0`. Sigh..
 
+#### Preferred unit test commands
+
+Although the command `dotnet test --tl` works and displays failing output in red, the layout seems to run together.
+
+The preferred way to view output is the more complicated command, `dotnet run --project tests/Ledger.Tests`. If a test fails, this prints a failure message in red and a (partial) stacktrace. If all tests pass, it prints everything in white (sigh).
+
 -
