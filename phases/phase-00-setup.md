@@ -117,4 +117,40 @@ Then revert the assertion so the test passes again.
 
 _Fill this section in as you go. Things that surprised you, things that made you stop and think, links to docs you ended up reading. This is the part of the file that becomes most valuable on a refresher visit months from now._
 
+FYI. When I created the tests project, `tests/LedgerTests`, in Step 4, I encountered the following warning:
+
+> The template "xUnit.net v3 Test Project" was created successfully.
+> 
+> Processing post-creation actions...
+> Restoring /home/larryjones/professional/projects/learn-xunit/tests/LedgerTests/LedgerTests.csproj:
+>  Determining projects to restore...
+>  Restored /home/larryjones/professional/projects/learn-xunit/tests/LedgerTests/LedgerTests.csproj (in 2.37 sec).
+> Restore succeeded.
+> 
+> Unable to find the json file in the solution
+> Post action failed.
+> Manual instructions: If using .NET 10 SDK or later, manually update or create 'global.json' as per https://xunit.net/docs/getting-started/v3/microsoft-testing-platform#using-net-sdk-version-10-or-later 
+
+When I asked Claude about this warning, here was the response:
+
+> ● That warning is benign on .NET 8 — your project is correctly created and ready to use. Let me unpack
+>    what triggered it.
+> 
+>   What the warning is about. xUnit v3 ships on top of the Microsoft Testing Platform (MTP) — a newer
+>   testing host than the older VSTest one. The xUnit v3 template includes a post-creation action that
+>   wants to ensure your global.json is set up correctly for MTP. Specifically, on .NET 10 SDK and
+>   later, MTP requires either a global.json setting or an explicit opt-in to VSTest, because the .NET
+>   10 CLI has built-in test-runner integration that conflicts otherwise.
+> 
+>   You're on .NET 8, so none of that applies — but the post-action looks for global.json regardless and
+>    complains when it can't find one in your solution. Project files: created correctly. NuGet restore:
+>    succeeded. The post-action that failed is a precautionary thing for a future SDK you're not using
+>   yet.
+> 
+>   What global.json is (since you may not have hit it before): a JSON file at a solution/repo root that
+>    pins the .NET SDK version and configures rollforward behavior. Useful when you want dotnet build to
+>    fail loudly if someone tries to build on the wrong SDK. We don't need one for this tutorial.
+> 
+>   Verdict: ignore the warning. Mark Step 4 done.
+
 -
