@@ -56,7 +56,7 @@ dotnet new classlib -n Ledger -o src/Ledger
 
 `-o src/Ledger` puts it in a `src/` subfolder. Delete the auto-generated `Class1.cs` after it runs — real types come in later phases.
 
-### Step 4 — Create the test project (v3)  `[ ]`
+### Step 4 — Create the test project (v3)  `[x]`
 
 ```
 dotnet new xunit3 -o tests/Ledger.Tests
@@ -88,7 +88,7 @@ Worth holding this distinction in your head; it shapes a lot of what follows in 
 
 This is the cleanest moment in the whole tutorial to see the package surface area; once we add more, it gets noisier.
 
-### Step 5 — Wire everything together  `[ ]`
+### Step 5 — Wire everything together  `[x]`
 
 Three commands; in this order:
 
