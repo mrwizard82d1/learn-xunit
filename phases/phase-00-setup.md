@@ -103,7 +103,7 @@ dotnet add tests/Ledger.Tests/Ledger.Tests.csproj reference src/Ledger/Ledger.cs
 
 The first two register both projects in the solution file (so Rider sees them when opening the `.sln`). The third makes `Ledger.Tests` reference `Ledger`, so test code can `using Ledger;` and see production types.
 
-### Step 6 — First run  `[ ]`
+### Step 6 — First run  `[x]`
 
 ```
 dotnet test
@@ -144,6 +144,8 @@ Then revert the assertion so the test passes again, and confirm `echo $?` return
 
 _Fill this section in as you go. Things that surprised you, things that made you stop and think, links to docs you ended up reading. This is the part of the file that becomes most valuable on a refresher visit months from now._
 
+### Missing json file warningf
+
 FYI. When I created the tests project, `tests/LedgerTests`, in Step 4, I encountered the following warning:
 
 > The template "xUnit.net v3 Test Project" was created successfully.
@@ -179,5 +181,13 @@ When I asked Claude about this warning, here was the response:
 >    fail loudly if someone tries to build on the wrong SDK. We don't need one for this tutorial.
 > 
 >   Verdict: ignore the warning. Mark Step 4 done.
+
+#### No color when all tests passed.
+
+I observed that passing tests contain **no** green output. I thought I might need to set a switch to produce green output; however, after checking many, many, different details with Claude, Claude concluded that passing tests **do not** print in green; however, failing tests do print in red.
+
+Irritating, but useful to know.
+
+Claude recommended scanning the text to look for `Failed: 0`. Sigh..
 
 -
