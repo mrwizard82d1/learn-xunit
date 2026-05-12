@@ -16,8 +16,12 @@
 - **Solution name:** `LearnXunit` (PascalCase to match C# conventions).
 - **Layout:** `src/Ledger` for the production class library, `tests/Ledger.Tests` for the test project. Modern .NET convention; worth getting into the habit.
 - **Rider usage: editor only.** All builds and test runs go through `dotnet` from the Ubuntu CLI. Rider is used for code intelligence, navigation, refactoring, and reading source — not for running or debugging tests.
-  - Reason: project lives in WSL2 Ubuntu (separate personal GitHub identity, and keeping personal projects out of the Windows-side backup scope); Rider runs natively on Windows. Crossing that boundary for build/run produces brittle errors (targeting-pack mismatches on the Windows side, file-permission issues across the WSL ↔ Windows seam).
-  - Implication: skip Rider notes elsewhere in the tutorial that depend on the test-runner UI or the Rider debugger. Navigation/editor Rider notes still apply.
+  - Reason: project lives in WSL2 Ubuntu (separate personal GitHub identity, and keeping personal projects out of the Windows-side backup scope); Rider runs natively on Windows. Crossing that boundary for build/run produced a file-permission issue on the test executable across the WSL ↔ Windows seam. The companion targeting-pack mismatch (Windows .NET 10 SDK vs. project's `net8.0`) that originally also pushed us to CLI is no longer relevant after the 2026-05-12 upgrade — see below.
+  - Implication: skip Rider notes elsewhere in the tutorial that depend on the test-runner UI or the Rider debugger. Navigation/editor Rider notes still apply. Revisitable if you ever want to try the Rider runner UI again now that the SDK mismatch is gone.
+
+- **.NET 10 SDK and TFM (2026-05-12).** Bumped both `.csproj` files from `net8.0` to `net10.0`. Added `global.json` at the repo root pinning `sdk.version: "10.0.107"` with `rollForward: "latestFeature"`, and setting `test.runner: "Microsoft.Testing.Platform"` to opt `dotnet test` into MTP-native execution on .NET 10.
+  - Triggers: (a) .NET 8 LTS expires ~Nov 2026 — short runway; (b) the `dotnet test` console-output gap on .NET 8 + MTP (rich failure detail going to a log file instead of stdout) is closed in .NET 10's `dotnet test` rework. Both verified post-upgrade.
+  - Install path: Canonical's Ubuntu archive (`sudo apt install dotnet-sdk-10.0`), not Microsoft's apt repo. Ubuntu 24.04 ships .NET 10 in its own feed, so the single-vendor native path was available. Both SDKs (8.0.126 and 10.0.107) coexist at `/usr/lib/dotnet/sdk`; `global.json` is what pins this project to .NET 10.
 
 ## Goal
 
@@ -146,6 +150,8 @@ _Fill this section in as you go. Things that surprised you, things that made you
 
 ### Missing json file warningf
 
+> **Update 2026-05-12:** `global.json` now exists at the repo root, created during the .NET 10 SDK upgrade (see "Decisions made" above). It pins the SDK and opts `dotnet test` into MTP. The post-action warning below would no longer fire today.
+
 FYI. When I created the tests project, `tests/LedgerTests`, in Step 4, I encountered the following warning:
 
 > The template "xUnit.net v3 Test Project" was created successfully.
@@ -190,7 +196,13 @@ Irritating, but useful to know.
 
 Claude recommended scanning the text to look for `Failed: 0`. Sigh..
 
+> **Update 2026-05-12 (post-.NET-10 upgrade):** The `dotnet test` output format changed substantially — passing runs now print `Test run summary: Passed!` with a small block of `total/failed/succeeded/skipped/duration` lines, rather than the single `Failed: 0, Passed: 1, ...` line we used to scan. Whether the new format actually renders `Passed!` in green is worth re-checking the next time you see a passing run; the structural change makes that question worth revisiting rather than carrying the .NET 8 observation forward as a settled fact.
+
 #### Preferred unit test commands
+
+> **Update 2026-05-12 (post-.NET-10 upgrade):** This guidance is now historical. On .NET 10 with `global.json` opting into `test.runner: "Microsoft.Testing.Platform"`, `dotnet test` invokes MTP natively and prints rich per-failure detail (custom message + file:line + partial stack trace) directly to the console. It's the canonical command again. `dotnet run --project tests/<TestProject>` still works and is useful pedagogically — it makes the MTP host-model point concrete (the test project *is* an executable) — but it's no longer required as a workaround for an output gap.
+>
+> The original guidance below applied to the .NET 8 + MTP era and is preserved for context.
 
 Although the command `dotnet test --tl` works and displays failing output in red, the layout seems to run together.
 
