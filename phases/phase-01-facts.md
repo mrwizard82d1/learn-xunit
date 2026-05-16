@@ -17,6 +17,7 @@ Tour xUnit's assertion surface and lock in the NUnit→xUnit translations throug
 
 - **Smoke tests as permanent canaries.** `SmokeTests.cs` is the project-level canary; each new test class gets a per-class smoke `[Fact]` kept alongside the real tests.
 - **First class introduction goes inline in the test file.** A new type starts inside `XyzTests.cs` so the failing test fails on assertion logic, not on a "type not found" build error. After the first green, the canonical first refactor is to extract the type to its own production file (e.g. `src/Ledger/Xyz.cs`). Subsequent additions to the type happen directly in the extracted production file via the skeleton-then-implement pattern.
+- **`Money` allows negative amounts.** `Subtract` may produce negative `Money` values (e.g. `Money(50, "USD").Subtract(Money(100, "USD")) == Money(-50, "USD")`). Sign is part of the quantity; `Money` doesn't enforce direction policy. Ledger entries naturally have signed direction (credits and debits); overdraft / "can I afford this withdrawal?" rules belong at the Account/Ledger layer in Phase 2+. Locked in by an explicit `Subtract_AmountGreaterThanFirst_ReturnsNegativeMoney` test.
 - *(add others as we go)*
 
 ---
@@ -171,4 +172,14 @@ Used Rider functionality to perform Money refactoring after passing equality tes
 - Extract Money to its own file.
 - Move Money.cs from `Ledger.Tests` to `Ledger`
 
--
+### Questions / issues
+
+While implementing `Add()` and `Subtract()`, I had the following questions / issues / thoughts.
+
+1. My subtraction tests produced **negative** amounts. I'm uncertain if this is valid.
+   - See the [Decisions made](#decisions-made) section for my choice to **include** negative amounts.
+    
+2. For refactoring the common exception handling, I generally follow the "rule-of-three" so I may not refactor here. (Because the domain is so simple / so familiar, it is not unreasonable to extract this common handling into a common "pre-condition" method.)
+
+3. At one point, Rider asked if I wanted to change my `Add` method into a static (no longer). This made me ask the question: "Hmm. Right now, my Add (and Subtract) is a bit "asymmetric". Making it static restores that symmetry at the cost of a "more complex" implementation.
+
