@@ -21,6 +21,7 @@ These map naturally onto every xUnit feature worth knowing without forcing it.
 ## How to use this plan
 
 - It is a **map, not a script.** Detours are encouraged — most of the value in learning a tool comes from the questions you ask while using it.
+- **TDD as the default learning rhythm.** Each new test class starts with a smoke `[Fact]` (a runnable failure, then flipped to passing) that is **kept as a permanent canary** for that class. Subsequent tests follow red-green-refactor where every "red" is a *runnable* assertion failure — **compile errors don't count as red**. When a new test needs not-yet-existent production code, pair it with a minimal compilable skeleton (`throw new NotImplementedException()`, a deliberately weaker implementation) so the test fails on assertion, not on build. Some phases focus on xUnit mechanics rather than driving design (Phase 4 fixtures, Phase 8 parallelism, Phase 10 migration) and relax the strict cycle.
 - Each phase has: **Goal**, **What we'll build**, **xUnit features introduced**, and **NUnit ↔ xUnit notes** so your existing knowledge does the heavy lifting. **Rider notes** appear where the IDE materially changes the experience.
 - Shortcuts cite the **IntelliJ-style keymap** (Rider → Settings → Keymap → "IntelliJ IDEA Classic" or similar). If a shortcut ever feels wrong, you've probably picked it up from Visual Studio muscle memory; check `Help → Find Action` (`Ctrl+Shift+A`).
 - The "Stretch" bullets in each phase are optional rabbit holes; pull them in if they catch your interest.
