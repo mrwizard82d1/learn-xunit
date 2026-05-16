@@ -14,6 +14,6 @@ public record Money(decimal Amount, string Currency)
 
     public Money Subtract(Money subtrahend)
     {
-        return new Money(Amount, Currency);
+        return new Money(Amount - subtrahend.Amount, Currency);
     }
 }
