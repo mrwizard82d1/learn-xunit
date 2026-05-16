@@ -69,7 +69,7 @@ Records generate `Equals`/`GetHashCode` from positional properties. Test passes.
 
 This also fixes the `Money {}` `ToString()` weakness you may have noticed earlier — records auto-generate a `ToString()` of the form `Money { Amount = 10, Currency = USD }`.
 
-### Step 4 — REFACTOR: extract `Money` to its own production file  `[ ]`
+### Step 4 — REFACTOR: extract `Money` to its own production file  `[x]`
 
 Now that the test is green, move the `Money` record from `MoneyTests.cs` to `src/Ledger/Money.cs`:
 
@@ -166,6 +166,9 @@ Add to **Notes & questions** below: which translations actually tripped you here
 
 ## Notes & questions
 
-_Fill in as you go._
+Used Rider functionality to perform Money refactoring after passing equality tests.
+
+- Extract Money to its own file.
+- Move Money.cs from `Ledger.Tests` to `Ledger`
 
 -

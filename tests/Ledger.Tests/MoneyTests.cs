@@ -17,5 +17,3 @@ public class MoneyTests
         Assert.Equal(left, right);
     }
 }
-
-public record Money(decimal Amount, string Currency);
