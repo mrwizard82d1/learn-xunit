@@ -181,6 +181,7 @@ While implementing `Add()` and `Subtract()`, I had the following questions / iss
    - See the [Decisions made](#decisions-made) section for my choice to **include** negative amounts.
     
 2. For refactoring the common exception handling, I generally follow the "rule-of-three" so I may not refactor here. (Because the domain is so simple / so familiar, it is not unreasonable to extract this common handling into a common "pre-condition" method.)
+   - Extracted common code into private method, `Money.EnsureSameCurrency()`
 
 3. At one point, Rider asked if I wanted to change my `Add` method into a static (no longer). This made me ask the question: "Hmm. Right now, my Add (and Subtract) is a bit "asymmetric". Making it static restores that symmetry at the cost of a "more complex" implementation.
 
