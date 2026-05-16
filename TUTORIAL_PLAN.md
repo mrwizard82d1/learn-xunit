@@ -28,7 +28,7 @@ These map naturally onto every xUnit feature worth knowing without forcing it.
 
 Mark phases with `[x]` as you complete them so the file becomes a record of what you've learned.
 
-> **Setup note:** This project uses Rider as an editor only — builds and test runs are all CLI (`dotnet test`, `dotnet watch test`, `dotnet run --project ...`). See [`phases/phase-00-setup.md`](phases/phase-00-setup.md) for context. Rider notes throughout this plan that depend on the **test-runner UI** or the **debugger** do not apply in this setup; navigation, refactor, decompile, and analyzer notes still do.
+> **Setup note:** This project uses Rider via **JetBrains Gateway Remote Development** with the Rider backend inside WSL2 Ubuntu. Build, edit, refactor, and debug all work; test execution uses the auto-generated **`Ledger.Tests` Run configuration**. However, **Rider's Test Explorer doesn't populate** for xUnit v3 + MTP on Rider 2026.1.1, so Rider notes in this plan that depend on **per-test gutter icons** or the **Tests/Unit Tests tool window** don't apply. Use the Run configuration for all-tests; `dotnet test --filter "..."` from the CLI for per-test runs. See [`phases/phase-00-setup.md`](phases/phase-00-setup.md) for full context.
 
 ---
 

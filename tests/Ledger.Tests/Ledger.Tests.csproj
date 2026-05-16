@@ -4,9 +4,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
-    <RootNamespace>LedgerTests</RootNamespace>
+    <RootNamespace>Ledger.Tests</RootNamespace>
     <TargetFramework>net10.0</TargetFramework>
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
