@@ -184,4 +184,5 @@ While implementing `Add()` and `Subtract()`, I had the following questions / iss
    - Extracted common code into private method, `Money.EnsureSameCurrency()`
 
 3. At one point, Rider asked if I wanted to change my `Add` method into a static (no longer). This made me ask the question: "Hmm. Right now, my Add (and Subtract) is a bit "asymmetric". Making it static restores that symmetry at the cost of a "more complex" implementation.
+   - Although, in general, this is a valuable trade-off to consider seriously in production, it provides a diversion from my goal of learning `xUnit`. I will defer this effort to some other time.
 
