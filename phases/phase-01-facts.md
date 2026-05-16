@@ -16,6 +16,7 @@ Tour xUnit's assertion surface and lock in the NUnit→xUnit translations throug
 ## Decisions made
 
 - **Smoke tests as permanent canaries.** `SmokeTests.cs` is the project-level canary; each new test class gets a per-class smoke `[Fact]` kept alongside the real tests.
+- **First class introduction goes inline in the test file.** A new type starts inside `XyzTests.cs` so the failing test fails on assertion logic, not on a "type not found" build error. After the first green, the canonical first refactor is to extract the type to its own production file (e.g. `src/Ledger/Xyz.cs`). Subsequent additions to the type happen directly in the extracted production file via the skeleton-then-implement pattern.
 - *(add others as we go)*
 
 ---
@@ -32,15 +33,13 @@ xUnit-specific bits before Step 2:
 - `using Xunit;` is implicit via `<Using Include="Xunit" />` in the csproj.
 - `Assert.Equal` rather than `Assert.AreEqual`. Argument order is the same (`expected, actual`) as classic NUnit — no surprise for your muscle memory.
 
-### Step 2 — RED: equality test + `Money` as a class  `[ ]`
+### Step 2 — RED: equality test + `Money` class skeleton (inline in `MoneyTests.cs`)  `[ ]`
 
 Test: two `Money` values with the same amount and currency are equal. Use `Assert.Equal(expected, actual)`.
 
-Pair with a compilable skeleton in `src/Ledger/Money.cs`:
+Pair with a compilable skeleton **inline in `MoneyTests.cs`** (not yet in its own production file):
 
 ```csharp
-namespace Ledger;
-
 public class Money
 {
     public decimal Amount { get; }
@@ -56,7 +55,23 @@ public class Money
 
 Class (not record) — the failing test drives the design choice. Default `class` equality is reference equality; the assertion fails.
 
-### Step 3 — GREEN: convert to record  `[ ]`
+Inline placement keeps the red as a logical assertion failure, not a "type not found" build error.
+
+### Step 3 — GREEN: convert to record (still inline)  `[ ]`
+
+In `MoneyTests.cs`, replace the class definition with a positional record:
+
+```csharp
+public record Money(decimal Amount, string Currency);
+```
+
+Records generate `Equals`/`GetHashCode` from positional properties. Test passes.
+
+This also fixes the `Money {}` `ToString()` weakness you may have noticed earlier — records auto-generate a `ToString()` of the form `Money { Amount = 10, Currency = USD }`.
+
+### Step 4 — REFACTOR: extract `Money` to its own production file  `[ ]`
+
+Now that the test is green, move the `Money` record from `MoneyTests.cs` to `src/Ledger/Money.cs`:
 
 ```csharp
 namespace Ledger;
@@ -64,19 +79,23 @@ namespace Ledger;
 public record Money(decimal Amount, string Currency);
 ```
 
-Records generate `Equals`/`GetHashCode` from positional properties. Test passes.
+`MoneyTests.cs` needs to see `Money` from the `Ledger` namespace — either add `using Ledger;` at the top of the test file, or add it to the test csproj's implicit usings if you prefer global imports.
 
-### Step 4 — Catalog the failure message format  `[ ]`
+Re-run. Should still be green — pure structural refactor, no behavior change.
+
+From this point forward, additions to `Money` (`Add`, `Subtract`, etc.) happen directly in `src/Ledger/Money.cs`. The inline-then-extract pattern was for the type's first introduction only.
+
+### Step 5 — Catalog the failure message format  `[ ]`
 
 Break the equality test on purpose (change the expected value) and read xUnit's failure output. Verify it's `Expected: X / Actual: Y` so the message reads fluently when it shows up in CI later. Revert.
 
 (If you've used NUnit's `Assert.That(actual, Is.EqualTo(expected))` constraint API, the flipped argument order there is a real pitfall — but that's a post-2009 API you predate, so it's only relevant if you pair with someone who has that muscle memory.)
 
-### Step 5 — RED → GREEN: `Add` happy path  `[ ]`
+### Step 6 — RED → GREEN: `Add` happy path  `[ ]`
 
 Test: `money1.Add(money2)` returns a new `Money` with summed amount, same currency.
 
-Skeleton:
+Skeleton in `Money.cs`:
 
 ```csharp
 public Money Add(Money other) => throw new NotImplementedException();
@@ -88,7 +107,7 @@ Red on `NotImplementedException`. Implement:
 public Money Add(Money other) => new(Amount + other.Amount, Currency);
 ```
 
-### Step 6 — RED → GREEN: `Add` rejects currency mismatch  `[ ]`
+### Step 7 — RED → GREEN: `Add` rejects currency mismatch  `[ ]`
 
 Test:
 
@@ -96,7 +115,7 @@ Test:
 var ex = Assert.Throws<InvalidOperationException>(() => money1.Add(money2));
 ```
 
-with different currencies. `Assert.Throws<T>` returns the caught exception (you'll chain assertions on `ex.Message` in Step 8).
+with different currencies. `Assert.Throws<T>` returns the caught exception (you'll chain assertions on `ex.Message` in Step 9).
 
 xUnit specifics:
 
@@ -105,11 +124,11 @@ xUnit specifics:
 
 Add the guard, green.
 
-### Step 7 — Your turn: `Subtract`  `[ ]`
+### Step 8 — Your turn: `Subtract`  `[ ]`
 
 Same shape as `Add`: two tests, two cycles. After Green 2, decide whether the shared currency-check between `Add` and `Subtract` is worth extracting yet.
 
-### Step 8 — Assertion vocabulary  `[ ]`
+### Step 9 — Assertion vocabulary  `[ ]`
 
 Properties of `Money` worth verifying. One `[Fact]` per row.
 
@@ -131,7 +150,7 @@ xUnit's equality distinctions worth noting:
 - `Assert.Same` — `ReferenceEquals`. Two records can be `Equal` without being `Same`.
 - `Assert.Equivalent` — public-property comparison via reflection. Redundant for records; useful for legacy types without `IEquatable<T>`.
 
-### Step 9 — NUnit→xUnit notes that actually mattered  `[ ]`
+### Step 10 — NUnit→xUnit notes that actually mattered  `[ ]`
 
 Add to **Notes & questions** below: which translations actually tripped you here, vs which were no-ops. Useful baseline for Phase 2, where the bigger lifecycle shifts live.
 
