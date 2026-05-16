@@ -22,7 +22,7 @@ Tour xUnit's assertion surface and lock in the NUnit→xUnit translations throug
 
 ## Steps
 
-### Step 1 — Per-class smoke for `MoneyTests`  `[ ]`
+### Step 1 — Per-class smoke for `MoneyTests`  `[x]`
 
 Create `tests/Ledger.Tests/MoneyTests.cs` with one smoke `[Fact]` — `Assert.Fail("smoke")` (or `Assert.True(false, "smoke")` if your xUnit version lacks `Assert.Fail`). Run, confirm fail. Flip to `Assert.True(true)`, confirm pass. Keep as the first `[Fact]` in the class.
 

@@ -5,6 +5,6 @@ public class MoneyTests
     [Fact]
     public void SmokeTests()
     {
-        Assert.Fail("A failing smoke test");
+        Assert.Equal(4, 2 + 2);
     }
 }
