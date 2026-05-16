@@ -85,7 +85,7 @@ Re-run. Should still be green — pure structural refactor, no behavior change.
 
 From this point forward, additions to `Money` (`Add`, `Subtract`, etc.) happen directly in `src/Ledger/Money.cs`. The inline-then-extract pattern was for the type's first introduction only.
 
-### Step 5 — Catalog the failure message format  `[ ]`
+### Step 5 — Catalog the failure message format  `[x]`
 
 Break the equality test on purpose (change the expected value) and read xUnit's failure output. Verify it's `Expected: X / Actual: Y` so the message reads fluently when it shows up in CI later. Revert.
 
