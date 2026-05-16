@@ -25,4 +25,13 @@ public class MoneyTests
 
         Assert.Equal(new Money(1341.11M, "DKK"), addend1.Add(addend2));
     }
+
+    [Fact]
+    public void TwoMoneyInstancesDifferentCurrencies_Add_ThrowsInvalidOperationException()
+    {
+        var addend1 = new Money(591.18M, "PHP");
+        var addend2 = new Money(268.73M, "PHO");
+
+        Assert.Throws<InvalidOperationException>(() => addend1.Add(addend2));
+    }
 }
