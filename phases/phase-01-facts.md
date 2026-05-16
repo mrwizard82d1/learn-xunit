@@ -91,7 +91,7 @@ Break the equality test on purpose (change the expected value) and read xUnit's 
 
 (If you've used NUnit's `Assert.That(actual, Is.EqualTo(expected))` constraint API, the flipped argument order there is a real pitfall — but that's a post-2009 API you predate, so it's only relevant if you pair with someone who has that muscle memory.)
 
-### Step 6 — RED → GREEN: `Add` happy path  `[ ]`
+### Step 6 — RED → GREEN: `Add` happy path  `[x]`
 
 Test: `money1.Add(money2)` returns a new `Money` with summed amount, same currency.
 
@@ -107,7 +107,7 @@ Red on `NotImplementedException`. Implement:
 public Money Add(Money other) => new(Amount + other.Amount, Currency);
 ```
 
-### Step 7 — RED → GREEN: `Add` rejects currency mismatch  `[ ]`
+### Step 7 — RED → GREEN: `Add` rejects currency mismatch  `[x]`
 
 Test:
 
