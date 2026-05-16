@@ -33,7 +33,7 @@ xUnit-specific bits before Step 2:
 - `using Xunit;` is implicit via `<Using Include="Xunit" />` in the csproj.
 - `Assert.Equal` rather than `Assert.AreEqual`. Argument order is the same (`expected, actual`) as classic NUnit — no surprise for your muscle memory.
 
-### Step 2 — RED: equality test + `Money` class skeleton (inline in `MoneyTests.cs`)  `[ ]`
+### Step 2 — RED: equality test + `Money` class skeleton (inline in `MoneyTests.cs`)  `[x]`
 
 Test: two `Money` values with the same amount and currency are equal. Use `Assert.Equal(expected, actual)`.
 
@@ -57,7 +57,7 @@ Class (not record) — the failing test drives the design choice. Default `class
 
 Inline placement keeps the red as a logical assertion failure, not a "type not found" build error.
 
-### Step 3 — GREEN: convert to record (still inline)  `[ ]`
+### Step 3 — GREEN: convert to record (still inline)  `[x]`
 
 In `MoneyTests.cs`, replace the class definition with a positional record:
 

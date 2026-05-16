@@ -11,21 +11,11 @@ public class MoneyTests
     [Fact]
     public void TwoMoneyInstancesWithEqualCurrencyAndAmountAreEqual()
     {
-        var left = new Money(3.5M, "USD");
-        var right = new Money(3.5M, "USD");
+        var left = new Money(778.72M, "CAD");
+        var right = new Money(778.72M, "CAD");
         
         Assert.Equal(left, right);
     }
 }
 
-public class Money
-{
-    private decimal _amount;
-    private string _currency;
-
-    public Money(decimal amount, string currency)
-    {
-        _amount = 0;
-        _currency = String.Empty;
-    }
-}
+public record Money(decimal Amount, string Currency);
