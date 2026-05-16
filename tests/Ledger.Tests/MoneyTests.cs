@@ -34,4 +34,13 @@ public class MoneyTests
 
         Assert.Throws<InvalidOperationException>(() => addend1.Add(addend2));
     }
+
+    [Fact]
+    public void TwoMoneyInstances_Subtract_DifferenceIsCorrect()
+    {
+        var minuend = new Money(273.03M, "BDT");
+        var subtrahend = new Money(282.35M, "BDT");
+
+        Assert.Equal(new Money(-9.32M, "BDT"), minuend.Subtract(subtrahend));
+    }
 }
