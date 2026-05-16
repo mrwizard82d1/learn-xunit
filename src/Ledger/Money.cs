@@ -4,6 +4,6 @@ public record Money(decimal Amount, string Currency)
 {
     public Money Add(Money addend2)
     {
-        throw new NotImplementedException();
+        return new Money(0, String.Empty);
     }
 }
