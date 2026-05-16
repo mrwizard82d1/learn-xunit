@@ -11,9 +11,9 @@ public class MoneyTests
     [Fact]
     public void TwoMoneyInstancesWithEqualCurrencyAndAmountAreEqual()
     {
-        var left = new Money(778.72M, "CAD");
-        var right = new Money(778.72M, "CAD");
+        var actual = new Money(778.72M, "CAD");
+        var expect = new Money(778.72M, "CAD");
         
-        Assert.Equal(left, right);
+        Assert.Equal(expect, actual);
     }
 }
