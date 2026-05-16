@@ -14,6 +14,6 @@ public record Money(decimal Amount, string Currency)
 
     public Money Subtract(Money subtrahend)
     {
-        throw new NotImplementedException();
+        return new Money(Amount, Currency);
     }
 }
