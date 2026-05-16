@@ -124,7 +124,7 @@ xUnit specifics:
 
 Add the guard, green.
 
-### Step 8 — Your turn: `Subtract`  `[ ]`
+### Step 8 — Your turn: `Subtract`  `[x]`
 
 Same shape as `Add`: two tests, two cycles. After Green 2, decide whether the shared currency-check between `Add` and `Subtract` is worth extracting yet.
 
