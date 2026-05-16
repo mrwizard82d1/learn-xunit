@@ -16,4 +16,13 @@ public class MoneyTests
         
         Assert.Equal(expect, actual);
     }
+
+    [Fact]
+    public void TwoMoneyInstances_Add_SumIsCorrect()
+    {
+        var addend1 = new Money(607.37M, "DKK");
+        var addend2 = new Money(734.74M, "DKK");
+
+        Assert.Equal(new Money(1341.11M, "DKK"), addend1.Add(addend2));
+    }
 }
