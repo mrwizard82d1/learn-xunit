@@ -2,7 +2,6 @@ namespace Ledger.Tests;
 
 // Candidate tests:
 // 
-// - Whitespace surrounding currency is trimmed (not tested)
 // - Same instances
 // - Instances have correct currency code after construction (all uppercase)
 // - Correctly `Add` a `Money` instance with negative amount
@@ -57,6 +56,14 @@ public class MoneyTests
         var actual = new Money(-101.87M, "gMd");
         
         Assert.Equal("GMD", actual.Currency);
+    }
+
+    [Fact]
+    public void ConstructCurrency_WithWhitespaceAroundCurrency_ReportsCorrectCurrency()
+    {
+        var actual = new Money(273.91M, " MNT\t");
+        
+        Assert.Equal("MNT", actual.Currency);
     }
 
     [Fact]

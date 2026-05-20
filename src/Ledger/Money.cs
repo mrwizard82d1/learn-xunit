@@ -1,10 +1,12 @@
+using System.Collections.Immutable;
+
 namespace Ledger;
 
 public record Money(decimal Amount, string Currency)
 {
     public string Currency { get; } = (string.IsNullOrEmpty(Currency.Trim()) ? 
         throw new ArgumentOutOfRangeException(nameof(Currency), "Currency must contain a value") : 
-        Currency.ToUpperInvariant()); 
+        Currency.Trim().ToUpperInvariant()); 
     
     public Money Add(Money addend2)
     {
