@@ -2,7 +2,6 @@ namespace Ledger.Tests;
 
 // Candidate tests:
 // 
-// - Add a "zero" amount of Money returns the other argument
 // - Addition is commutative
 // - Addition is associative
 // - Subtraction is equivalent to adding a negative
@@ -211,4 +210,26 @@ public class MoneyTests
         var ex = Assert.Throws<InvalidOperationException>(() => minuend.Subtract(subtrahend));
         Assert.Matches(@"\bsubtract\b", ex.Message);
     }
+    
+    // Arithmetic invariants
+    
+    // Identity element
+    [Fact]
+    public void TwoMoneyInstancesButSecondZero_Add_SumEqualsFirstArgument()
+    {
+        var addend1 = new Money(-591.35M, "GGP");
+        var addend2 = new Money(0M, "GGP");
+
+        Assert.Equal(new Money(-591.35M, "GGP"), addend1.Add(addend2));
+    }
+    
+    [Fact]
+    public void TwoMoneyInstancesButFirstZero_Add_SumEqualsSecondArgument()
+    {
+        var addend1 = new Money(0M, "GGP");
+        var addend2 = new Money(-591.35M, "GGP");
+
+        Assert.Equal(new Money(-591.35M, "GGP"), addend1.Add(addend2));
+    }
+    
 }
