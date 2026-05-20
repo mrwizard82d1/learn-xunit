@@ -2,11 +2,7 @@ namespace Ledger.Tests;
 
 // Candidate tests:
 // 
-// - Constructructor preserves amount 
-//   - Positive
-//   - Negative
-//   - Zero
-// - Constructore normalizes currency to uppercase
+// - Constructor normalizes currency to uppercase
 // - Currency must be non-empty
 // - Same instances
 // - Instances have correct currency code after construction (all uppercase)
@@ -17,7 +13,7 @@ namespace Ledger.Tests;
 // - Exception message contains the offending currency code
 // - Exception message text starts with
 //   - "Cannot add"
-//   - "Cannot substract"
+//   - "Cannot subtract"
 // - Add returns an instance of `Money`
 // - Add a "zero" amount of Money returns the other argument
 // - Addition is commutative
@@ -30,6 +26,30 @@ public class MoneyTests
     public void SmokeTests()
     {
         Assert.Equal(4, 2 + 2);
+    }
+
+    [Fact]
+    public void ConstructCurrency_WithPositiveAmount_ReportsPositive()
+    {
+        var actual = new Money(199.45M, "BBD");
+        
+        Assert.True(actual.Amount > 0);
+    }
+
+    [Fact]
+    public void ConstructCurrency_WithNegativeAmount_ReportsNegative()
+    {
+        var actual = new Money(-439.45M, "IDR");
+        
+        Assert.True(actual.Amount < 0);
+    }
+
+    [Fact]
+    public void ConstructCurrency_WithZeroAmount_ReportsZero()
+    {
+        var actual = new Money(-0.00M, "TTD");
+        
+        Assert.Equal(0, actual.Amount);
     }
 
     [Fact]
