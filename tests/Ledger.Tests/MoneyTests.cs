@@ -22,8 +22,8 @@ namespace Ledger.Tests;
 // - Add a "zero" amount of Money returns the other argument
 // - Addition is commutative
 // - Addition is associative
+// - Subtraction is equivalent to adding a negative
 //
-// When finished with these tests, consider refactoring `Subtract` to perform addition of negative values
 public class MoneyTests
 {
     [Fact]
