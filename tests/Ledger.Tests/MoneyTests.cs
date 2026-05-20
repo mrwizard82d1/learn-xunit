@@ -2,8 +2,6 @@ namespace Ledger.Tests;
 
 // Candidate tests:
 // 
-// - `Add` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
-// - `Subtract` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
 // - Exception message contains the offending currency code
 // - Exception message text starts with
 //   - "Cannot add"
@@ -157,6 +155,15 @@ public class MoneyTests
         var subtrahend = new Money(282.35M, "BDT");
 
         Assert.Equal(new Money(-9.32M, "BDT"), minuend.Subtract(subtrahend));
+    }
+
+    [Fact]
+    public void TwoMoneyInstances_Subtract_CurrencyIsSameAsCurrencyOfFirst()
+    {
+        var addend1 = new Money(-345.21M, "EUR");
+        var addend2 = new Money(268.54M, "EUR");
+
+        Assert.Equal(new Money(-613.75M, "EUR"), addend1.Subtract(addend2));
     }
 
     [Fact]
