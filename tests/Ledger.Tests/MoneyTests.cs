@@ -131,6 +131,15 @@ public class MoneyTests
 
         Assert.Equal(new Money(-21.39M, "DKK"), addend1.Add(addend2));
     }
+
+    [Fact]
+    public void TwoMoneyInstances_Add_CurrencyIsSameAsCurrencyOfFirst()
+    {
+        var addend1 = new Money(742.19M, "BWP");
+        var addend2 = new Money(815.62M, "BWP");
+
+        Assert.Equal(new Money(1557.81M, "BWP"), addend1.Add(addend2));
+    }
     
     [Fact]
     public void TwoMoneyInstancesDifferentCurrencies_Add_ThrowsInvalidOperationException()
