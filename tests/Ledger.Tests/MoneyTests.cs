@@ -2,10 +2,6 @@ namespace Ledger.Tests;
 
 // Candidate tests:
 // 
-// - Exception message contains the offending currency code
-// - Exception message text starts with
-//   - "Cannot add"
-//   - "Cannot subtract"
 // - Add returns an instance of `Money`
 // - Add a "zero" amount of Money returns the other argument
 // - Addition is commutative
@@ -173,5 +169,40 @@ public class MoneyTests
         var subtrahend = new Money(137.06M, "EGR");
 
         Assert.Throws<InvalidOperationException>(() => minuend.Subtract(subtrahend));
+    }
+    
+    [Fact]
+    public void TwoMoneyInstancesDifferentCurrencies_Add_ErrorMessageContainsCorrectCurrencyCodes()
+    {
+        var addend1 = new Money(391.76M, "RUB");
+        var addend2 = new Money(834.68M, "NIO");
+        
+        var ex = Assert.Throws<InvalidOperationException>(() => addend1.Add(addend2));
+
+        Assert.Multiple(
+            () => Assert.Contains("RUB", ex.Message),
+            () => Assert.Contains("NIO", ex.Message));
+    }
+    
+    [Fact]
+    public void TwoMoneyInstancesDifferentCurrencies_Add_ErrorMessageStartsWithCorrectText()
+    {
+        var addend1 = new Money(-282.55M, "QAR");
+        var addend2 = new Money(995.59M, "BOB");
+        
+        var ex = Assert.Throws<InvalidOperationException>(() => addend1.Add(addend2));
+        // Not very robust. A "predictable" change is to put text before this text in the error message.
+        Assert.StartsWith("Cannot add", ex.Message);
+    }
+    
+    [Fact]
+    public void TwoMoneyInstancesDifferentCurrencies_Subtract_ErrorMessageStartsWithCorrectText()
+    {
+        var minuend = new Money(-852.19M, "SCR");
+        var subtrahend = new Money(288.67M, "CUC");
+        
+        var ex = Assert.Throws<InvalidOperationException>(() => minuend.Subtract(subtrahend));
+        // Not very robust. A "predictable" change is to put text before this text in the error message.
+        Assert.StartsWith("Cannot subtract", ex.Message);
     }
 }

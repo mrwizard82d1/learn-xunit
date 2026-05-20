@@ -10,21 +10,21 @@ public record Money(decimal Amount, string Currency)
     
     public Money Add(Money addend2)
     {
-        EnsureSameCurrency(addend2);
+        EnsureSameCurrency(addend2, "add");
         return new Money(Amount + addend2.Amount, Currency);
     }
 
     public Money Subtract(Money subtrahend)
     {
-        EnsureSameCurrency(subtrahend);
+        EnsureSameCurrency(subtrahend, "subtract");
         return new Money(Amount - subtrahend.Amount, Currency);
     }
 
-    private void EnsureSameCurrency(Money instance)
+    private void EnsureSameCurrency(Money instance, string operation)
     {
         if (Currency != instance.Currency)
         {
-            throw new InvalidOperationException($"Different currencies: {Currency} != {instance.Currency}");
+            throw new InvalidOperationException($"Cannot {operation}: {Currency} != {instance.Currency}");
         }
     }
 }
