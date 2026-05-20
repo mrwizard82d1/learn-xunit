@@ -2,8 +2,7 @@ namespace Ledger.Tests;
 
 // Candidate tests:
 // 
-// - Constructor normalizes currency to uppercase
-// - Currency must be non-empty
+// - Whitespace surrounding currency is trimmed (not tested)
 // - Same instances
 // - Instances have correct currency code after construction (all uppercase)
 // - Correctly `Add` a `Money` instance with negative amount
@@ -50,6 +49,20 @@ public class MoneyTests
         var actual = new Money(-0.00M, "TTD");
         
         Assert.Equal(0, actual.Amount);
+    }
+
+    [Fact]
+    public void ConstructCurrency_WithMixedCaseCurrency_ReportsUpperCase()
+    {
+        var actual = new Money(-101.87M, "gMd");
+        
+        Assert.Equal("GMD", actual.Currency);
+    }
+
+    [Fact]
+    public void ConstructCurrency_WithEmptyString_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new Money(450.81M, ""));
     }
 
     [Fact]
