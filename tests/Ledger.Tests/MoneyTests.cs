@@ -1,20 +1,29 @@
 namespace Ledger.Tests;
 
 // Candidate tests:
-// Instances have correct amount after construction
-// - Positive
-// - Negative
-// - Zero
-// Instances of currency cannot be empty
-// Instances have correct currency code after construction
-// Instances of currency are all uppercase
-// - A corollary, which I do not plan to implement, is to validate the currency code.
-// Verify distinct handling of identity from equality (`Assert.Same` / `Assert.NotSame`)
-// Correctly `Add` a `Money` instance with negative amount
-// `Add` can return a `Money` instance with a negative amount
-// `Subtract` can return a `Money` instance with a negative amount
-// `Add` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
-// `Subtract` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
+// 
+// - Constructructor preserves amount 
+//   - Positive
+//   - Negative
+//   - Zero
+// - Constructore normalizes currency to uppercase
+// - Currency must be non-empty
+// - Same instances
+// - Instances have correct currency code after construction (all uppercase)
+// - Correctly `Add` a `Money` instance with negative amount
+// - `Add` can return a `Money` instance with a negative amount
+// - `Add` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
+// - `Subtract` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
+// - Exception message contains the offending currency code
+// - Exception message text starts with
+//   - "Cannot add"
+//   - "Cannot substract"
+// - Add returns an instance of `Money`
+// - Add a "zero" amount of Money returns the other argument
+// - Addition is commutative
+// - Addition is associative
+//
+// When finished with these tests, consider refactoring `Subtract` to perform addition of negative values
 public class MoneyTests
 {
     [Fact]
