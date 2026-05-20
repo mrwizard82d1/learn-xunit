@@ -193,14 +193,13 @@ public class MoneyTests
     }
     
     [Fact]
-    public void TwoMoneyInstancesDifferentCurrencies_Add_ErrorMessageStartsWithCorrectText()
+    public void TwoMoneyInstancesDifferentCurrencies_Add_ErrorMessageContainsOperation()
     {
         var addend1 = new Money(-282.55M, "QAR");
         var addend2 = new Money(995.59M, "BOB");
         
         var ex = Assert.Throws<InvalidOperationException>(() => addend1.Add(addend2));
-        // Not very robust. A "predictable" change is to put text before this text in the error message.
-        Assert.StartsWith("Cannot add", ex.Message);
+        Assert.Matches(@"\badd\b", ex.Message);
     }
     
     [Fact]
@@ -210,7 +209,6 @@ public class MoneyTests
         var subtrahend = new Money(288.67M, "CUC");
         
         var ex = Assert.Throws<InvalidOperationException>(() => minuend.Subtract(subtrahend));
-        // Not very robust. A "predictable" change is to put text before this text in the error message.
-        Assert.StartsWith("Cannot subtract", ex.Message);
+        Assert.Matches(@"\bsubtract\b", ex.Message);
     }
 }
