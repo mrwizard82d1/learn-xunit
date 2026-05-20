@@ -27,4 +27,9 @@ public record Money(decimal Amount, string Currency)
             throw new InvalidOperationException($"Cannot {operation}: {Currency} != {instance.Currency}");
         }
     }
+
+    public Money Negate()
+    {
+        return new Money(-Amount, Currency);
+    }
 }
