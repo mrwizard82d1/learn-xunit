@@ -2,8 +2,6 @@ namespace Ledger.Tests;
 
 // Candidate tests:
 // 
-// - Subtraction is equivalent to adding a negative
-//
 public class MoneyTests
 {
     [Fact]
@@ -161,10 +159,10 @@ public class MoneyTests
     [Fact]
     public void TwoMoneyInstances_Subtract_CurrencyIsSameAsCurrencyOfFirst()
     {
-        var addend1 = new Money(-345.21M, "EUR");
-        var addend2 = new Money(268.54M, "EUR");
+        var minuend = new Money(-345.21M, "EUR");
+        var subtrahend = new Money(268.54M, "EUR");
 
-        Assert.Equal(new Money(-613.75M, "EUR"), addend1.Subtract(addend2));
+        Assert.Equal(new Money(-613.75M, "EUR"), minuend.Subtract(subtrahend));
     }
 
     [Fact]
@@ -245,12 +243,24 @@ public class MoneyTests
     // Associativity
     
     [Fact]
-    public void ThreeMonyInstances_Add_Associates()
+    public void ThreeMoneyInstances_Add_Associates()
     {
         var addend1 = new Money(-502.87M, "lrd");
         var addend2 = new Money(-309.46M, "Lrd");
         var addend3 = new Money(686.38M, "lrD");
 
         Assert.Equal(addend1.Add(addend2.Add(addend3)), (addend1.Add(addend2)).Add(addend3));
+    }
+    
+    // Subtraction is identical to adding the negative
+    
+    [Fact]
+    public void TwoMoneyInstances_Subtract_EqualToAdditionOfNegative()
+    {
+        var minuend = new Money(-316.43M, "PYG");
+        var subtrahend = new Money(-835.06M, "PYG");
+        var negativeSubtrahend = new Money(835.06M, "PYG");
+
+        Assert.Equal(minuend.Subtract(subtrahend), minuend.Add(negativeSubtrahend));
     }
 }
