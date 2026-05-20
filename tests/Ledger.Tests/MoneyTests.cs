@@ -2,7 +2,6 @@ namespace Ledger.Tests;
 
 // Candidate tests:
 // 
-// - Add returns an instance of `Money`
 // - Add a "zero" amount of Money returns the other argument
 // - Addition is commutative
 // - Addition is associative
@@ -106,6 +105,15 @@ public class MoneyTests
         var equalMoney = new Money(-975.29M, "MYR");
         
         Assert.NotSame(someMoney, equalMoney);
+    }
+
+    [Fact]
+    public void TwoMoneyInstances_Add_TypeOfReturnValueIsMoney()
+    {
+        var addend1 = new Money(269.84M, "TND");
+        var addend2 = new Money(530.90M, "TND");
+
+        Assert.IsType<Money>(addend1.Add(addend2));
     }
 
     [Fact]
