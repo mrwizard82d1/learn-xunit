@@ -2,8 +2,6 @@ namespace Ledger.Tests;
 
 // Candidate tests:
 // 
-// - Correctly `Add` a `Money` instance with negative amount
-// - `Add` can return a `Money` instance with a negative amount
 // - `Add` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
 // - `Subtract` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
 // - Exception message contains the offending currency code
@@ -104,7 +102,7 @@ public class MoneyTests
         // ReSharper disable once InlineTemporaryVariable
         var alias = actual;
         
-        Assert.NotSame(alias, actual);
+        Assert.Same(alias, actual);
     }
 
     [Fact]
@@ -125,6 +123,15 @@ public class MoneyTests
         Assert.Equal(new Money(1341.11M, "DKK"), addend1.Add(addend2));
     }
 
+    [Fact]
+    public void TwoMoneyInstancesButOneNegative_Add_SumIsCorrect()
+    {
+        var addend1 = new Money(871.13M, "DKK");
+        var addend2 = new Money(-892.52M, "DKK");
+
+        Assert.Equal(new Money(-21.39M, "DKK"), addend1.Add(addend2));
+    }
+    
     [Fact]
     public void TwoMoneyInstancesDifferentCurrencies_Add_ThrowsInvalidOperationException()
     {
