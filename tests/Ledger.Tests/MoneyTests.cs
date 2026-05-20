@@ -2,8 +2,6 @@ namespace Ledger.Tests;
 
 // Candidate tests:
 // 
-// - Same instances
-// - Instances have correct currency code after construction (all uppercase)
 // - Correctly `Add` a `Money` instance with negative amount
 // - `Add` can return a `Money` instance with a negative amount
 // - `Add` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
@@ -97,6 +95,25 @@ public class MoneyTests
         var expect = new Money(778.71M, "CAD");
         
         Assert.NotEqual(expect, actual);
+    }
+
+    [Fact]
+    public void AnInstanceAndAnAlias_ReportTheSame()
+    {
+        var actual = new Money(-115.63M, "IRR");
+        // ReSharper disable once InlineTemporaryVariable
+        var alias = actual;
+        
+        Assert.NotSame(alias, actual);
+    }
+
+    [Fact]
+    public void TwoEqualInstances_DoNotReportTheSame()
+    {
+        var someMoney = new Money(-975.29M, "MYR");
+        var equalMoney = new Money(-975.29M, "MYR");
+        
+        Assert.NotSame(someMoney, equalMoney);
     }
 
     [Fact]
