@@ -1,5 +1,20 @@
 namespace Ledger.Tests;
 
+// Candidate tests:
+// Instances have correct amount after construction
+// - Positive
+// - Negative
+// - Zero
+// Instances of currency cannot be empty
+// Instances have correct currency code after construction
+// Instances of currency are all uppercase
+// - A corollary, which I do not plan to implement, is to validate the currency code.
+// Verify distinct handling of identity from equality (`Assert.Same` / `Assert.NotSame`)
+// Correctly `Add` a `Money` instance with negative amount
+// `Add` can return a `Money` instance with a negative amount
+// `Subtract` can return a `Money` instance with a negative amount
+// `Add` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
+// `Subtract` returns a value whose `Currency` property is equal to the `Currency` property of the first argument
 public class MoneyTests
 {
     [Fact]
