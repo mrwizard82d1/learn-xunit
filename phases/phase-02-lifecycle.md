@@ -32,7 +32,7 @@ Vehicle: an in-memory `AccountRepository` that tests need a clean copy of each t
 
 Create `tests/Ledger.Tests/AccountRepositoryTests.cs` with the per-class smoke `[Fact]` (`Assert.Equal(4, 2 + 2)` per established pattern). Run, see it pass.
 
-### Step 2 — RED → GREEN: new repository contains no accounts  `[ ]`
+### Step 2 — RED → GREEN: new repository contains no accounts  `[x]`
 
 Test: a freshly constructed `AccountRepository` returns `false` for any `Contains(id)` lookup.
 
