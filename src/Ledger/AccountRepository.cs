@@ -2,7 +2,7 @@ namespace Ledger;
 
 public class AccountRepository
 {
-    private readonly Dictionary<string, Account> _accounts = new Dictionary<string, Account>();
+    private readonly Dictionary<string, Account> _accounts = new();
     private int _nextId = 1;
     
     public bool Contains(string candidateId) => _accounts.ContainsKey(candidateId);

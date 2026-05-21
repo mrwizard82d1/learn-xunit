@@ -1,7 +1,5 @@
 namespace Ledger.Tests;
 
-using Ledger;
-
 public class AccountRepositoryTests
 {
     [Fact]
