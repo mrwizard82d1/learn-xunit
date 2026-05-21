@@ -74,4 +74,15 @@ public class AccountRepositoryTests
         var actualNewAccount = repository.Get(id);
         Assert.Equal(id, actualNewAccount.Id);
     }
+
+    [Fact]
+    public void Contains_AccountRepositoryDoesNotContainId_ReturnsFalse()
+    {
+        var repository = new AccountRepository();
+        
+        var initialBalance = new Money(986.66M, "sos");
+        var id = repository.OpenAccount(initialBalance);
+
+        Assert.False(repository.Contains($"acc-99999"));
+    }
 }
