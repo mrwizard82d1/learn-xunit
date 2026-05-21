@@ -48,7 +48,7 @@ public class AccountRepository
 
 Red on `NotImplementedException`. Make green minimally — return `false`. The next test will force the real shape.
 
-### Step 3 — RED → GREEN: opening an account stores it in the repository (introduces `Account`)  `[ ]`
+### Step 3 — RED → GREEN: opening an account stores it in the repository (introduces `Account`)  `[x]`
 
 Test: after calling `_repo.OpenAccount(balance)`, the returned account's ID is known to the repository.
 
