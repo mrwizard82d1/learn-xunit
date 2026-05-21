@@ -7,13 +7,13 @@ public class AccountRepository
     
     public bool Contains(string candidateId) => _accounts.ContainsKey(candidateId);
     
-    public string OpenAccount(Money amount)
+    public Account OpenAccount(Money amount)
     { 
         var newAccountNumber = $"acc-{_nextId++}";
         var newAccount =  new Account(newAccountNumber, amount);
         _accounts.Add(newAccountNumber, newAccount);
         
-        return newAccountNumber;
+        return newAccount;
     }
 
     public Account Get(string id)

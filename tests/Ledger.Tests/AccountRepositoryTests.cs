@@ -16,9 +16,9 @@ public class AccountRepositoryTests
         var repository = new AccountRepository();
         var initialBalance = new Money(508.84M, "eur");
         
-        var newAccountId = repository.OpenAccount(initialBalance);
+        var newAccount = repository.OpenAccount(initialBalance);
 
-        Assert.True(repository.Contains(newAccountId));
+        Assert.True(repository.Contains(newAccount.Id));
     }
 
     [Fact]
@@ -27,9 +27,9 @@ public class AccountRepositoryTests
         var repository = new AccountRepository();
         var initialBalance = new Money(820.49M, "kmf");
         
-        var newAccountId = repository.OpenAccount(initialBalance);
+        var newAccount = repository.OpenAccount(initialBalance);
 
-        Assert.True(repository.Contains(newAccountId));
+        Assert.True(repository.Contains(newAccount.Id));
     }
 
     [Fact]
@@ -52,14 +52,14 @@ public class AccountRepositoryTests
         var repository = new AccountRepository();
         
         var firstAccountInitialBalance = new Money(848.19M, "lsl");
-        var firstAccountId = repository.OpenAccount(firstAccountInitialBalance);
+        var firstAccount = repository.OpenAccount(firstAccountInitialBalance);
         
         var secondAccountInitialBalance = new Money(402.84M, "xdr");
-        var secondAccountId = repository.OpenAccount(secondAccountInitialBalance);
+        var secondAccount = repository.OpenAccount(secondAccountInitialBalance);
 
         Assert.Multiple(
-            () => Assert.True(repository.Contains(firstAccountId)),
-            () => Assert.True(repository.Contains(secondAccountId))
+            () => Assert.True(repository.Contains(firstAccount.Id)),
+            () => Assert.True(repository.Contains(secondAccount.Id))
             );
     }
 
@@ -69,10 +69,10 @@ public class AccountRepositoryTests
         var repository = new AccountRepository();
         
         var initialBalance = new Money(848.19M, "lsl");
-        var id = repository.OpenAccount(initialBalance);
+        var addedAccount = repository.OpenAccount(initialBalance);
 
-        var actualNewAccount = repository.Get(id);
-        Assert.Equal(id, actualNewAccount.Id);
+        var foundAccount = repository.Get(addedAccount.Id);
+        Assert.Equal(addedAccount, foundAccount);
     }
 
     [Fact]
@@ -81,8 +81,8 @@ public class AccountRepositoryTests
         var repository = new AccountRepository();
         
         var initialBalance = new Money(986.66M, "sos");
-        var id = repository.OpenAccount(initialBalance);
+        repository.OpenAccount(initialBalance);
 
-        Assert.False(repository.Contains($"acc-99999"));
+        Assert.False(repository.Contains($"no-such-account"));
     }
 }
