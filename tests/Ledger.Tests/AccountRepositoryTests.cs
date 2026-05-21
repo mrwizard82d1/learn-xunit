@@ -20,7 +20,7 @@ public class AccountRepositoryTests
     }
 
     [Fact]
-    public void OpenAccountWithInitialBalance_NoAccounts_OpenedAccountWithHasInitialBalance()
+    public void OpenAccountWithInitialBalance_NoAccounts_OpenedAccountHasInitialBalance()
     {
         var repository = new AccountRepository();
         var initialBalance = new Money(820.49M, "kmf");
@@ -31,17 +31,31 @@ public class AccountRepositoryTests
     }
 
     [Fact]
-    public void OpenAccount_OneAccountExists_ReturnsDifferentAccountNumber()
+    public void OpenAccount_OneAccountExists_ReturnsDifferentAccounts()
     {
         var repository = new AccountRepository();
         
         var firstAccountInitialBalance = new Money(973.85M, "mdl");
-        var firstAccountId = repository.OpenAccount(firstAccountInitialBalance);
+        var firstAccount = repository.OpenAccount(firstAccountInitialBalance);
         
         var secondAccountInitialBalance = new Money(825.98M, "myr");
-        var secondAccountId = repository.OpenAccount(secondAccountInitialBalance);
+        var secondAccount = repository.OpenAccount(secondAccountInitialBalance);
 
-        Assert.NotEqual(firstAccountId, secondAccountId);
+        Assert.NotEqual(firstAccount, secondAccount);
+    }
+
+    [Fact]
+    public void OpenAccount_OneAccountExists_ReturnsAccountWithDifferentId()
+    {
+        var repository = new AccountRepository();
+        
+        var firstAccountInitialBalance = new Money(768.77M, "tmt");
+        var firstAccount = repository.OpenAccount(firstAccountInitialBalance);
+        
+        var secondAccountInitialBalance = new Money(768.77M, "tmt");
+        var secondAccount = repository.OpenAccount(secondAccountInitialBalance);
+
+        Assert.NotEqual(firstAccount.Id, secondAccount.Id);
     }
 
     [Fact]
@@ -81,6 +95,6 @@ public class AccountRepositoryTests
         var initialBalance = new Money(986.66M, "sos");
         repository.OpenAccount(initialBalance);
 
-        Assert.False(repository.Contains($"no-such-account"));
+        Assert.False(repository.Contains("no-such-account"));
     }
 }
