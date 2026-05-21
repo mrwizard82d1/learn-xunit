@@ -131,7 +131,7 @@ Add the guard, green.
 
 Same shape as `Add`: two tests, two cycles. After Green 2, decide whether the shared currency-check between `Add` and `Subtract` is worth extracting yet.
 
-### Step 9 — Assertion vocabulary  `[ ]`
+### Step 9 — Assertion vocabulary  `[x]`
 
 Properties of `Money` worth verifying. One `[Fact]` per row.
 
@@ -153,7 +153,7 @@ xUnit's equality distinctions worth noting:
 - `Assert.Same` — `ReferenceEquals`. Two records can be `Equal` without being `Same`.
 - `Assert.Equivalent` — public-property comparison via reflection. Redundant for records; useful for legacy types without `IEquatable<T>`.
 
-### Step 10 — NUnit→xUnit notes that actually mattered  `[ ]`
+### Step 10 — NUnit→xUnit notes that actually mattered  `[x]`
 
 Add to **Notes & questions** below: which translations actually tripped you here, vs which were no-ops. Useful baseline for Phase 2, where the bigger lifecycle shifts live.
 
