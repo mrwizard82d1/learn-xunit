@@ -28,7 +28,7 @@ Vehicle: an in-memory `AccountRepository` that tests need a clean copy of each t
 
 ## Steps
 
-### Step 1 — Per-class smoke for `AccountRepositoryTests`  `[ ]`
+### Step 1 — Per-class smoke for `AccountRepositoryTests`  `[x]`
 
 Create `tests/Ledger.Tests/AccountRepositoryTests.cs` with the per-class smoke `[Fact]` (`Assert.Equal(4, 2 + 2)` per established pattern). Run, see it pass.
 
