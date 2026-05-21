@@ -29,7 +29,7 @@ public class AccountRepositoryTests
         
         var newAccount = repository.OpenAccount(initialBalance);
 
-        Assert.True(repository.Contains(newAccount.Id));
+        Assert.Equal(new Money(820.49M, "kmf"), newAccount.Balance);
     }
 
     [Fact]
