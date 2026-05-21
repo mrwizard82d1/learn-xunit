@@ -93,7 +93,7 @@ Green.
 - A `Get(id)` method that returns the account or signals absence.
 - A `Close(id)` method for completeness (the inverse of `Open`).
 
-### Step 4 — REFACTOR: extract `Account` and `AccountRepository` to production files  `[ ]`
+### Step 4 — REFACTOR: extract `Account` and `AccountRepository` to production files  `[x]`
 
 Per the inline-then-extract decision from Phase 1:
 - `src/Ledger/Account.cs`
