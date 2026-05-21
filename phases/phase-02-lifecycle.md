@@ -22,6 +22,7 @@ Vehicle: an in-memory `AccountRepository` that tests need a clean copy of each t
 ## Decisions made
 
 - (inherits Phase 1's smoke-as-canary, inline-then-extract, and skeleton+test patterns)
+- **Domain language: accounts are *opened* and *closed*, not *added* and *removed*.** `AccountRepository.OpenAccount(initialBalance)` issues a new account ID and returns the resulting `Account`. Callers cannot supply an ID — the repository owns ID generation. `Account`'s constructor remains public for testability, but in production code the repository is the sole source of new accounts. This separates "store" (a generic CRUD concern) from "create-and-store" (the domain operation).
 - *(add others as we go)*
 
 ---
@@ -47,25 +48,50 @@ public class AccountRepository
 
 Red on `NotImplementedException`. Make green minimally — return `false`. The next test will force the real shape.
 
-### Step 3 — RED → GREEN: after `Add`, `Contains` returns true (introduces `Account`)  `[ ]`
+### Step 3 — RED → GREEN: opening an account stores it in the repository (introduces `Account`)  `[ ]`
 
-Test: after calling `repo.Add(account)`, `repo.Contains(account.Id)` returns true.
+Test: after calling `_repo.OpenAccount(balance)`, the returned account's ID is known to the repository.
 
-You need an `Account` type to write this. Inline next to the repository:
+You need an `Account` type to write this. Inline next to the repository, with a marker comment recording the design intent (the compiler can't enforce it, so make it visible to humans):
 
 ```csharp
+// Production code obtains accounts via AccountRepository.OpenAccount.
+// This public constructor exists for test construction only.
 public record Account(string Id, Money Balance);
 ```
 
-Minimal for now — an Id and the `Money` balance from Phase 1. Will grow in later phases (account type, overdraft limit, etc.).
+Minimal — an `Id` and the `Money` balance from Phase 1. Will grow in later phases (account type, overdraft limit, etc.).
 
 Repository skeleton for the new method:
 
 ```csharp
-public void Add(Account account) => throw new NotImplementedException();
+public Account OpenAccount(Money initialBalance) => throw new NotImplementedException();
 ```
 
-Red, then implement minimally — a `HashSet<string>` of ids backing both `Add` and `Contains` is enough. Green.
+Red on `NotImplementedException`. Implement minimally — generate a sequential ID, store the account, return it. A `Dictionary<string, Account>` works because the next test you'll want is "look up an account by ID":
+
+```csharp
+private readonly Dictionary<string, Account> _accounts = new();
+private int _nextId = 1;
+
+public Account OpenAccount(Money initialBalance)
+{
+    var account = new Account($"acc-{_nextId++}", initialBalance);
+    _accounts[account.Id] = account;
+    return account;
+}
+
+public bool Contains(string accountId) => _accounts.ContainsKey(accountId);
+```
+
+Green.
+
+**Candidate tests worth adding to your list** (each a natural follow-on red-green cycle, not required for Phase 2's lifecycle focus):
+
+- `OpeningAccount_ReturnsAccountWithInitialBalance` — `_repo.OpenAccount(balance).Balance` equals `balance`.
+- `OpeningMultipleAccounts_AssignsDistinctIds` — two opens yield two different IDs.
+- A `Get(id)` method that returns the account or signals absence.
+- A `Close(id)` method for completeness (the inverse of `Open`).
 
 ### Step 4 — REFACTOR: extract `Account` and `AccountRepository` to production files  `[ ]`
 
@@ -107,20 +133,24 @@ Two tests that *would* fail if instances were shared. They're documentation that
 
 ```csharp
 [Fact]
-public void Lifecycle_PartOne_AddsAccount()
+public void Lifecycle_PartOne_OpensAccount()
 {
-    _repo.Add(new Account("demo-id", new Money(100M, "USD")));
-    Assert.True(_repo.Contains("demo-id"));
+    var account = _repo.OpenAccount(new Money(100M, "USD"));
+    Assert.True(_repo.Contains(account.Id));
 }
 
 [Fact]
-public void Lifecycle_PartTwo_RepoIsEmpty()
+public void Lifecycle_PartTwo_RepoStartsFresh()
 {
-    Assert.False(_repo.Contains("demo-id"));
+    // If PartOne and PartTwo shared the same instance, the ID counter would
+    // have advanced past "acc-1". Getting "acc-1" back proves each [Fact] got
+    // its own fresh AccountRepositoryTests instance.
+    var account = _repo.OpenAccount(new Money(50M, "USD"));
+    Assert.Equal("acc-1", account.Id);
 }
 ```
 
-If xUnit ran `PartOne` first against a shared instance, `PartTwo` would see `demo-id` and fail. The fact that **both pass regardless of order** proves each test got its own fresh `AccountRepositoryTests` instance with its own fresh `_repo`.
+If xUnit ran `PartOne` first against a shared instance, `PartTwo`'s newly-opened account would get `"acc-2"` (the counter had already advanced). The fact that **both pass regardless of order** proves each test got its own fresh `AccountRepositoryTests` instance with its own fresh `_repo` (and its own fresh counter).
 
 Keep these as documentation, or delete them now that you've internalized the point. Your call.
 
