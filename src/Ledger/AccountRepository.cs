@@ -1,6 +1,6 @@
 namespace Ledger;
 
-public record AccountRepository
+public class AccountRepository
 {
     private readonly Dictionary<string, Account> _accounts = new Dictionary<string, Account>();
     private int _nextId = 1;
