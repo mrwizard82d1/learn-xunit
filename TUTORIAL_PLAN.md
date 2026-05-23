@@ -83,7 +83,7 @@ Mark phases with `[x]` as you complete them so the file becomes a record of what
 
 ---
 
-## Phase 2 — Lifecycle: constructor, `IDisposable`, `IAsyncLifetime`  `[ ]`
+## Phase 2 — Lifecycle: constructor, `IDisposable`, `IAsyncLifetime`  `[x]`
 
 **Goal:** Internalize the single biggest cultural difference from NUnit: **a fresh test class instance per test method.**
 
