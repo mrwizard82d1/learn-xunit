@@ -180,7 +180,7 @@ For an in-memory repository there's nothing to clean up, so this is the pattern,
 
 **NUnit ↔ xUnit:** `[TearDown]` → `Dispose`. Same per-test lifecycle as the constructor. xUnit chose the language's existing cleanup contract instead of inventing a new attribute. If you also want one-time class-level teardown, that's `IClassFixture<T>` territory (Phase 4).
 
-### Step 8 — `IAsyncLifetime` (preview, not yet used)  `[ ]`
+### Step 8 — `IAsyncLifetime` (preview, not yet used)  `[x]`
 
 For setup or teardown that must `await` something:
 
