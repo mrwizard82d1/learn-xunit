@@ -154,7 +154,7 @@ If xUnit ran `PartOne` first against a shared instance, `PartTwo`'s newly-opened
 
 Keep these as documentation, or delete them now that you've internalized the point. Your call.
 
-### Step 7 — TEARDOWN: `IDisposable.Dispose`  `[ ]`
+### Step 7 — TEARDOWN: `IDisposable.Dispose`  `[x]`
 
 For test classes that hold cleanup-requiring resources (file handles, db connections, temp dirs, environment-variable mutations), implement `IDisposable`:
 
