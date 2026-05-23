@@ -198,7 +198,7 @@ Not needed yet — our in-memory repository is synchronous. We'll wire it in for
 
 **NUnit ↔ xUnit:** NUnit's `[SetUp]`/`[OneTimeSetUp]` can be `async`. xUnit splits this into the language-native `IDisposable`/`IAsyncDisposable` for teardown plus `IAsyncLifetime` for async setup — slightly more interfaces, but each does exactly one thing.
 
-### Step 9 — NUnit↔xUnit lifecycle reflection  `[ ]`
+### Step 9 — NUnit↔xUnit lifecycle reflection  `[x]`
 
 In **Notes & questions** below, capture:
 
@@ -218,6 +218,16 @@ In **Notes & questions** below, capture:
 
 ## Notes & questions
 
-_Fill in as you go._
+I have not filled out much yet...
 
--
+### Questions
+
+- Which `NUnit` lifecycle attributes have I used most often? What are the equivalent `xUnit` constructs?
+    The most prevalent `NUnit` lifecyle attribute that I have used is `Setup`. Consequently, I expect to use constructors most frequently.
+- Do I feel comfortable with the `per-test` setup used by `xUnit`?
+    I think I am comfortable now, but I expect I will at times ask, "How do I setup this common data/infrastructure/ 
+  for all these tests?"
+- What real bugs have I encountered in `NUnit`/`pyunit`/`JUnit` caused by shared, mutable state between tests?
+    Honestly, I cannot recall any. I suspect I have encountered these kinds of issues; however, since I typically 
+  start with "hard-coded setup per test" and then refactor to common setup, I will encounter this less (or find it 
+  earlier.)
