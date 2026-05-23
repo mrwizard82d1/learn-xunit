@@ -127,7 +127,7 @@ The field initializer runs as part of the constructor — same lifecycle, less c
 
 Re-run; all tests still green.
 
-### Step 6 — DEMO: prove per-test isolation (optional but cheap)  `[ ]`
+### Step 6 — DEMO: prove per-test isolation (optional but cheap)  `[x]`
 
 Two tests that *would* fail if instances were shared. They're documentation that the per-test invariant is being relied on:
 

@@ -7,14 +7,14 @@ public class AccountRepositoryTests
     [Fact]
     public void SmokeTest()
     {
-        Assert.Equal(4, 2+2);
+        Assert.Equal(4, 2 + 2);
     }
 
     [Fact]
     public void OpenAccount_NoAccounts_AccountWithNewAccountIdExists()
     {
         var initialBalance = new Money(508.84M, "eur");
-        
+
         var newAccount = _repository.OpenAccount(initialBalance);
 
         Assert.True(_repository.Contains(newAccount.Id));
@@ -24,7 +24,7 @@ public class AccountRepositoryTests
     public void OpenAccountWithInitialBalance_NoAccounts_OpenedAccountHasInitialBalance()
     {
         var initialBalance = new Money(820.49M, "kmf");
-        
+
         var newAccount = _repository.OpenAccount(initialBalance);
 
         Assert.Equal(new Money(820.49M, "kmf"), newAccount.Balance);
@@ -35,7 +35,7 @@ public class AccountRepositoryTests
     {
         var firstAccountInitialBalance = new Money(973.85M, "mdl");
         var firstAccount = _repository.OpenAccount(firstAccountInitialBalance);
-        
+
         var secondAccountInitialBalance = new Money(825.98M, "myr");
         var secondAccount = _repository.OpenAccount(secondAccountInitialBalance);
 
@@ -47,7 +47,7 @@ public class AccountRepositoryTests
     {
         var firstAccountInitialBalance = new Money(768.77M, "tmt");
         var firstAccount = _repository.OpenAccount(firstAccountInitialBalance);
-        
+
         var secondAccountInitialBalance = new Money(768.77M, "tmt");
         var secondAccount = _repository.OpenAccount(secondAccountInitialBalance);
 
@@ -59,14 +59,14 @@ public class AccountRepositoryTests
     {
         var firstAccountInitialBalance = new Money(848.19M, "lsl");
         var firstAccount = _repository.OpenAccount(firstAccountInitialBalance);
-        
+
         var secondAccountInitialBalance = new Money(402.84M, "xdr");
         var secondAccount = _repository.OpenAccount(secondAccountInitialBalance);
 
         Assert.Multiple(
             () => Assert.True(_repository.Contains(firstAccount.Id)),
             () => Assert.True(_repository.Contains(secondAccount.Id))
-            );
+        );
     }
 
     [Fact]
@@ -86,5 +86,32 @@ public class AccountRepositoryTests
         _repository.OpenAccount(initialBalance);
 
         Assert.False(_repository.Contains("no-such-account"));
+    }
+
+    // "Faux" tests to verify that the instance member, `_repository``, is
+    // created anew for each test instance or only once for all tests in the
+    // class.
+    //
+    // In particular these two tests should fail if run sequentially (an
+    // assumption) but `repository` is only initialized once.
+    //
+    // These tests are not needed to demonstrate the functionality of our
+    // system under test; however, I have chosen to keep them for pedagogic
+    // reasons.
+    [Fact]
+    public void Lifecycle_PartOne_OpensAccount()
+    {
+        var account = _repository.OpenAccount(new Money(508.47M, "ang"));
+        Assert.True(_repository.Contains(account.Id));
+    }
+
+    [Fact]
+    public void Lifecycle_PartTwo_RepositoryStartsFresh()
+    {
+        // If `PartOne` and `PartTwo` share the same `_repository` instance,
+        // then repository counter would have advanced past "acc-1". If we get back
+        // "acc-1", then each `[Fact]` is getting **its own** fresh instance of `AccountRepositoryTests`.
+        var account = _repository.OpenAccount(new Money(508.74M, "ang"));
+        Assert.Equal("acc-1", account.Id);
     }
 }
