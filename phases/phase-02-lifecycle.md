@@ -101,7 +101,7 @@ Per the inline-then-extract decision from Phase 1:
 
 Add `using Ledger;` to `AccountRepositoryTests.cs` (or rely on existing implicit usings). Re-run; should still be green — pure structural refactor.
 
-### Step 5 — REFACTOR: hoist construction to a constructor (the `[SetUp]` equivalent)  `[ ]`
+### Step 5 — REFACTOR: hoist construction to a constructor (the `[SetUp]` equivalent)  `[x]`
 
 Right now each test starts with `var repo = new AccountRepository();`. Hoist it to a field initialized at class construction:
 

@@ -2,6 +2,8 @@ namespace Ledger.Tests;
 
 public class AccountRepositoryTests
 {
+    private readonly AccountRepository _repository = new AccountRepository();
+
     [Fact]
     public void SmokeTest()
     {
@@ -11,21 +13,19 @@ public class AccountRepositoryTests
     [Fact]
     public void OpenAccount_NoAccounts_AccountWithNewAccountIdExists()
     {
-        var repository = new AccountRepository();
         var initialBalance = new Money(508.84M, "eur");
         
-        var newAccount = repository.OpenAccount(initialBalance);
+        var newAccount = _repository.OpenAccount(initialBalance);
 
-        Assert.True(repository.Contains(newAccount.Id));
+        Assert.True(_repository.Contains(newAccount.Id));
     }
 
     [Fact]
     public void OpenAccountWithInitialBalance_NoAccounts_OpenedAccountHasInitialBalance()
     {
-        var repository = new AccountRepository();
         var initialBalance = new Money(820.49M, "kmf");
         
-        var newAccount = repository.OpenAccount(initialBalance);
+        var newAccount = _repository.OpenAccount(initialBalance);
 
         Assert.Equal(new Money(820.49M, "kmf"), newAccount.Balance);
     }
@@ -33,13 +33,11 @@ public class AccountRepositoryTests
     [Fact]
     public void OpenAccount_OneAccountExists_ReturnsDifferentAccounts()
     {
-        var repository = new AccountRepository();
-        
         var firstAccountInitialBalance = new Money(973.85M, "mdl");
-        var firstAccount = repository.OpenAccount(firstAccountInitialBalance);
+        var firstAccount = _repository.OpenAccount(firstAccountInitialBalance);
         
         var secondAccountInitialBalance = new Money(825.98M, "myr");
-        var secondAccount = repository.OpenAccount(secondAccountInitialBalance);
+        var secondAccount = _repository.OpenAccount(secondAccountInitialBalance);
 
         Assert.NotEqual(firstAccount, secondAccount);
     }
@@ -47,13 +45,11 @@ public class AccountRepositoryTests
     [Fact]
     public void OpenAccount_OneAccountExists_ReturnsAccountWithDifferentId()
     {
-        var repository = new AccountRepository();
-        
         var firstAccountInitialBalance = new Money(768.77M, "tmt");
-        var firstAccount = repository.OpenAccount(firstAccountInitialBalance);
+        var firstAccount = _repository.OpenAccount(firstAccountInitialBalance);
         
         var secondAccountInitialBalance = new Money(768.77M, "tmt");
-        var secondAccount = repository.OpenAccount(secondAccountInitialBalance);
+        var secondAccount = _repository.OpenAccount(secondAccountInitialBalance);
 
         Assert.NotEqual(firstAccount.Id, secondAccount.Id);
     }
@@ -61,40 +57,34 @@ public class AccountRepositoryTests
     [Fact]
     public void OpenAccount_OneAccountExists_TwoAccountsWithDifferentIdsExist()
     {
-        var repository = new AccountRepository();
-        
         var firstAccountInitialBalance = new Money(848.19M, "lsl");
-        var firstAccount = repository.OpenAccount(firstAccountInitialBalance);
+        var firstAccount = _repository.OpenAccount(firstAccountInitialBalance);
         
         var secondAccountInitialBalance = new Money(402.84M, "xdr");
-        var secondAccount = repository.OpenAccount(secondAccountInitialBalance);
+        var secondAccount = _repository.OpenAccount(secondAccountInitialBalance);
 
         Assert.Multiple(
-            () => Assert.True(repository.Contains(firstAccount.Id)),
-            () => Assert.True(repository.Contains(secondAccount.Id))
+            () => Assert.True(_repository.Contains(firstAccount.Id)),
+            () => Assert.True(_repository.Contains(secondAccount.Id))
             );
     }
 
     [Fact]
     public void GetAccount_AccountWithIdExists_ReturnsAccount()
     {
-        var repository = new AccountRepository();
-        
         var initialBalance = new Money(848.19M, "lsl");
-        var addedAccount = repository.OpenAccount(initialBalance);
+        var addedAccount = _repository.OpenAccount(initialBalance);
 
-        var foundAccount = repository.Get(addedAccount.Id);
+        var foundAccount = _repository.Get(addedAccount.Id);
         Assert.Equal(addedAccount, foundAccount);
     }
 
     [Fact]
     public void Contains_AccountRepositoryDoesNotContainId_ReturnsFalse()
     {
-        var repository = new AccountRepository();
-        
         var initialBalance = new Money(986.66M, "sos");
-        repository.OpenAccount(initialBalance);
+        _repository.OpenAccount(initialBalance);
 
-        Assert.False(repository.Contains("no-such-account"));
+        Assert.False(_repository.Contains("no-such-account"));
     }
 }
