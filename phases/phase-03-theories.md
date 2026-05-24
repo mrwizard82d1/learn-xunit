@@ -29,7 +29,7 @@ Vehicle: refactor existing Phase 1 tests where the shape is "same logic, differe
 
 ## Steps
 
-### Step 1 — REFACTOR: `[Theory]` + `[InlineData]` for the constructor amount tests  `[ ]`
+### Step 1 — REFACTOR: `[Theory]` + `[InlineData]` for the constructor amount tests  `[x]`
 
 `MoneyConstructorTests` has three tests with identical shape varying only by amount:
 

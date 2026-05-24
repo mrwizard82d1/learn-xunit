@@ -1,7 +1,5 @@
 namespace Ledger.Tests;
 
-// Candidate tests:
-//
 public class MoneyConstructorTests
 {
     [Fact]
@@ -10,48 +8,32 @@ public class MoneyConstructorTests
         Assert.Equal(4, 2 + 2);
     }
 
-    [Fact]
-    public void ConstructCurrency_WithPositiveAmount_ReportsPositive()
+    [Theory]
+    [InlineData(199.45)]
+    [InlineData(-439.45)]
+    [InlineData(0.00)]
+    public void Construct_WithAmount_MoneyHasAmount(decimal amount)
     {
-        var actual = new Money(199.45M, "BBD");
+        var money = new Money(amount, "BBD");
 
-        Assert.True(actual.Amount > 0);
+        Assert.Equal(amount, money.Amount);
+    }
+
+    [Theory]
+    [InlineData("BBD", "BBD")]
+    [InlineData("idR", "IDR")]
+    [InlineData("gbp", "GBP")]
+    [InlineData(" tTD", "TTD")]
+    [InlineData(" Mnt\t", "MNT")]
+    public void Construct_WithCurrency_MoneyHasNormalizedCurrency(string actualCurrency, string expectedCurrency)
+    {
+        var money = new Money(849.92M, actualCurrency);
+
+        Assert.Equal(expectedCurrency, money.Currency);
     }
 
     [Fact]
-    public void ConstructCurrency_WithNegativeAmount_ReportsNegative()
-    {
-        var actual = new Money(-439.45M, "IDR");
-
-        Assert.True(actual.Amount < 0);
-    }
-
-    [Fact]
-    public void ConstructCurrency_WithZeroAmount_ReportsZero()
-    {
-        var actual = new Money(-0.00M, "TTD");
-
-        Assert.Equal(0, actual.Amount);
-    }
-
-    [Fact]
-    public void ConstructCurrency_WithMixedCaseCurrency_ReportsUpperCase()
-    {
-        var actual = new Money(-101.87M, "gMd");
-
-        Assert.Equal("GMD", actual.Currency);
-    }
-
-    [Fact]
-    public void ConstructCurrency_WithWhitespaceAroundCurrency_ReportsCorrectCurrency()
-    {
-        var actual = new Money(273.91M, " MNT\t");
-
-        Assert.Equal("MNT", actual.Currency);
-    }
-
-    [Fact]
-    public void ConstructCurrency_WithEmptyString_ThrowsArgumentException()
+    public void Construct_WithEmptyString_ThrowsArgumentException()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new Money(450.81M, ""));
     }
