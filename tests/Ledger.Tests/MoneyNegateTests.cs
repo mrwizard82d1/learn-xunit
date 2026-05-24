@@ -12,9 +12,9 @@ public class MoneyNegateTests
     [InlineData(940.95, "MNT", "MNT")]
     [InlineData(-859.95, "bdT", "BDT")]
     [InlineData(0.00, "gmd", "GMD")]
-    public void Negate_WithMoney_ReturnsMoneyWithNegativeAmountAndSameCurrency(
-        decimal amount, string actualCurrency, string expectedCurrency
-        )
+    public void Negate_WithMoney_ReturnsMoneyWithNegativeAmountAndSameCurrency(decimal amount,
+                                                                               string actualCurrency,
+                                                                               string expectedCurrency)
     {
         var toTest = new Money(amount, actualCurrency);
         var negated = toTest.Negate();
@@ -22,7 +22,7 @@ public class MoneyNegateTests
         Assert.Multiple(
             () => Assert.Equal(-amount, negated.Amount),
             () => Assert.Equal(expectedCurrency, negated.Currency)
-            );
+        );
     }
 
     [Fact]
