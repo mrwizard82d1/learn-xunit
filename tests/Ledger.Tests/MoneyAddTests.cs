@@ -17,22 +17,15 @@ public class MoneyAddTests
         Assert.IsType<Money>(addend1.Add(addend2));
     }
 
-    [Fact]
-    public void TwoMoneyInstances_Add_SumIsCorrect()
+    [Theory]
+    [InlineData(607.37, 733.74, 1341.11)] // positive sum
+    [InlineData(871.13, -892.52, -21.39)] // negative sum
+    [InlineData(0, 913.38, 913.38)] // first operand is zero
+    public void Add_SameCurrency_ProducesExpectedSum(decimal addend1, decimal addend2, decimal expectSum)
     {
-        var addend1 = new Money(607.37M, "DKK");
-        var addend2 = new Money(733.74M, "DKK");
-
-        Assert.Equal(new Money(1341.11M, "DKK"), addend1.Add(addend2));
-    }
-
-    [Fact]
-    public void TwoMoneyInstancesButOneNegative_Add_SumIsCorrect()
-    {
-        var addend1 = new Money(871.13M, "DKK");
-        var addend2 = new Money(-892.52M, "DKK");
-
-        Assert.Equal(new Money(-21.39M, "DKK"), addend1.Add(addend2));
+        const string currency = "DKK";
+        var actualSum = new Money(addend1, currency).Add(new Money(addend2, currency));
+        Assert.Equal(new Money(expectSum, currency), actualSum);
     }
 
     [Fact]
