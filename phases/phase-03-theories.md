@@ -59,7 +59,7 @@ Run. You'll see **three test cases reported independently**, one per `[InlineDat
 
 - `MoneyNegateTests`: positive/negative/zero amount cases — `[Theory] [InlineData(940.95, -940.95)] ... public void Negate_ReturnsOppositeAmount(decimal input, decimal expected)`.
 
-### Step 2 — REFACTOR: `[InlineData]` with multiple parameters  `[x]`
+### Step 2 — REFACTOR:~~~~ `[InlineData]` with multiple parameters  ~~~~`[x]`
 
 `MoneyAddTests` has several happy-path tests expressing Money sums. `[InlineData]` can't carry a `Money` (records aren't compile-time constants), but you can decompose to decimals + a currency string and reconstruct inside the method:
 
@@ -80,7 +80,7 @@ This works, and it's a legitimate pattern when the inputs decompose cleanly to p
 
 **Worth noting on the way:** `[InlineData]` arguments are constrained to whatever the C# attribute system allows — primitive types, strings, `typeof(T)`, enums, and arrays of those. No `new SomeClass(...)`, no `DateTime` literals (use `string` and `DateTime.Parse` inside the test), no `decimal` literal with `M` suffix (the attribute representation is `double` — the compiler converts).
 
-### Step 3 — REFACTOR: `[MemberData]` when `[InlineData]` can't carry the input shape  `[ ]`
+### Step 3 — REFACTOR: `[MemberData]` when `[InlineData]` can't carry the input shape  `[x]`
 
 For the same Add cases, expressed as `Money` instances directly:
 
