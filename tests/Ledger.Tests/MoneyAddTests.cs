@@ -17,27 +17,23 @@ public class MoneyAddTests
         Assert.IsType<Money>(addend1.Add(addend2));
     }
 
-    public static IEnumerable<object[]> AddCases =>
-        new[]
+    public static TheoryData<Money, Money, Money> AddCases =>
+        new()
         {
-            // Order: addend1, addend2, expected sum
-            new object[]
             {
                 new Money(607.37M, "DKK"),
                 new Money(733.74M, "DKK"),
-                new Money(1341.11M, "DKK"),
+                new Money(1341.11M, "DKK")
             },
-            new object[]
             {
                 new Money(871.13M, "DKK"),
                 new Money(-892.52M, "DKK"),
-                new Money(-21.39M, "DKK"),
+                new Money(-21.39M, "DKK")
             },
-            new object[]
             {
-                new Money(0M, "DKK"),
+                new Money(0.00M, "DKK"),
                 new Money(913.38M, "DKK"),
-                new Money(913.38M, "DKK"),
+                new Money(913.38M, "DKK")
             },
         };
 
