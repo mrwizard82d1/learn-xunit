@@ -17,31 +17,21 @@ public class MoneyAddTests
         Assert.IsType<Money>(addend1.Add(addend2));
     }
 
-    public static TheoryData<Money, Money, Money> AddCases =>
+    public static TheoryData<decimal, decimal, decimal, string> AddCases =>
         new()
         {
-            {
-                new Money(607.37M, "DKK"),
-                new Money(733.74M, "DKK"),
-                new Money(1341.11M, "DKK")
-            },
-            {
-                new Money(871.13M, "BSD"),
-                new Money(-892.52M, "BSD"),
-                new Money(-21.39M, "BSD")
-            },
-            {
-                new Money(0.00M, "IQD"),
-                new Money(913.38M, "IQD"),
-                new Money(913.38M, "IQD")
-            },
+            { 607.37M, 733.74M, 1341.11M, "DKK" },
+            { 871.13M, -892.52M, -21.39M, "BSD" },
+            { 0M, 913.38M, 913.38M, "IQD" },
         };
 
     [Theory]
     [MemberData(nameof(AddCases))]
-    public void Add_ProducesExpectedSum(Money addend1, Money addend2, Money expected)
+    public void Add_TwoMonies_ProducesExpectedSum(decimal addend1, decimal addend2, decimal expectedSum, string currency)
     {
-        Assert.Equal(expected, addend1.Add(addend2));
+        var actual = new Money(addend1, currency).Add(new Money(addend2, currency));
+        
+        Assert.Equal(new Money(expectedSum, currency), actual);
     }
 
     [Fact]

@@ -112,7 +112,7 @@ Now the test reads as the intent says: given these two Moneys, expect this sum.
 
 **NUnit ↔ xUnit:** `[TestCaseSource(nameof(AddCases))]` → `[MemberData(nameof(AddCases))]`. Direct translation; same idea.
 
-### Step 4 — REFACTOR: `TheoryData<T1, T2, ...>` for type-safe data; `[ClassData]` for reusable sets  `[ ]`
+### Step 4 — REFACTOR: `TheoryData<T1, T2, ...>` for type-safe data; `[ClassData]` for reusable sets  `[x]`
 
 `IEnumerable<object[]>` is untyped — a casting mistake in the data only surfaces at test runtime as an obscure `InvalidCastException`. `TheoryData<T1, T2, ...>` gives compile-time type safety:
 
