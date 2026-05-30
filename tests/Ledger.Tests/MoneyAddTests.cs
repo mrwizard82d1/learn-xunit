@@ -26,14 +26,14 @@ public class MoneyAddTests
                 new Money(1341.11M, "DKK")
             },
             {
-                new Money(871.13M, "DKK"),
-                new Money(-892.52M, "DKK"),
-                new Money(-21.39M, "DKK")
+                new Money(871.13M, "BSD"),
+                new Money(-892.52M, "BSD"),
+                new Money(-21.39M, "BSD")
             },
             {
-                new Money(0.00M, "DKK"),
-                new Money(913.38M, "DKK"),
-                new Money(913.38M, "DKK")
+                new Money(0.00M, "IQD"),
+                new Money(913.38M, "IQD"),
+                new Money(913.38M, "IQD")
             },
         };
 
