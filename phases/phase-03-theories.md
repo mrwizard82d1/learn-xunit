@@ -23,6 +23,7 @@ Vehicle: refactor existing Phase 1 tests where the shape is "same logic, differe
 ## Decisions made
 
 - (inherits Phase 1 and Phase 2 patterns)
+- **2026-05-28** — Refactored `Money.Currency` from `string` to a `CurrencyCode` value type during Step 5's punch list. Drove out of the `|` separator concern in `MoneyXunitSerializer`. See Step 5.5 for full rationale. The rest of the Step 5 punch list paused until the refactor lands.
 - *(add others as we go)*
 
 ---
@@ -310,6 +311,100 @@ The per-case parameter values still get appended. For most tests, the default `M
 How a parameter renders in the case name depends on its type's `ToString()` — `decimal` renders as the number, `string` renders as the literal, your `Money` renders as the record's auto-generated `Money { Amount = 607.37, Currency = DKK }` form. If you wanted to customize how `Money` displays in case names, you'd override `ToString()` on `Money` — independent of the serializer (serializer = identity; `ToString()` = display).
 
 **NUnit ↔ xUnit:** NUnit auto-serializes test parameters by walking their public properties via reflection, which is why you've never had to think about this in NUnit. xUnit is more conservative on purpose — explicit beats magical when display names need to be stable across runs and processes. The cost is the occasional `IXunitSerializer` you have to write; the benefit is no surprises when complex types behave oddly in case identity.
+
+### Step 5.5 — REFACTOR: stringly-typed `Currency` → `CurrencyCode` value type  `[ ]`
+
+#### Why this step exists
+
+`MoneyXunitSerializer.Serialize` uses `|` as a field separator. It's safe *only* if `Money.Currency` never contains `|`. ISO 4217 codes don't — but `Money`'s constructor doesn't enforce that. It normalizes whitespace and case, then trusts the caller. The serializer's correctness depends on a hidden coupling: "the currency string happens to be ISO-4217-shaped," with nothing in the type system saying it has to be.
+
+Three ways to close the gap came up during Step 5's adversarial review:
+
+- **Defend in the serializer** — check for `|` before producing the serialized string. Adds a defensive runtime check against something that "shouldn't happen" in practice. The same null-style noise we've been trying to avoid.
+- **Validate in `Money`'s constructor** — require `Currency` to be alpha or ISO-4217-pattern. Moves the invariant upstream. Better, but still a runtime check on a parameter.
+- **Refactor `Currency` to its own value type — `CurrencyCode`.** The constraint becomes the type. You cannot construct a `Money` with an invalid currency because the *type system* won't let you. Illegal states unrepresentable. The FP / DDD answer.
+
+We chose the third path. Reasons:
+
+1. **Stringly-typed → typed is a canonical engineering lesson.** "I thought string would be fine, but here's where it bites" is one of the most valuable senior-engineer instincts to develop. The `|` problem is the moment of pain that calls for it.
+2. **The refactor *generates* more xUnit practice, not less.** A new `CurrencyCode` type wants its own constructor tests, normalization tests, invalid-input tests — direct `[Theory]` territory paralleling `MoneyConstructorTests`. More test data, more theory shapes.
+3. **Multi-file refactoring under test coverage IS core TDD.** When `Money.Currency` changes from `string` to `CurrencyCode`, every test that constructs a Money with a string literal breaks. Working through those breakages, using the suite as a safety net during a structural change, is exactly the muscle memory the tutorial exists to build.
+4. **Don't normalize "skip the refactor; the punch list is more important."** Building a habit of "this isn't important enough to derail real work" is precisely the habit that lets stringly-typed code calcify across a career. The pause to do the work right is the work.
+
+The rest of the Step 5 punch list (folder reorganization, cosmetic cleanup) pauses until this refactor lands. Touching files that are about to move means redoing the work.
+
+#### Scope
+
+- New `src/Ledger/CurrencyCode.cs` — value type with its own constructor validation and normalization.
+- `Money.Currency` changes from `string` to `CurrencyCode`. Money's existing currency-normalization logic moves into `CurrencyCode` (where it belongs).
+- All Money construction sites in tests update (~30-50 sites; mostly mechanical).
+- `MoneyXunitSerializer` simplifies — the `|` concern is structurally gone.
+- New `CurrencyCodeTests` parallel to `MoneyConstructorTests`.
+
+#### Sub-step A — Decide the validation rule
+
+Before TDD-ing `CurrencyCode`, decide what it accepts and rejects. Options:
+
+- **Strict ISO 4217:** exactly three uppercase letters (`[A-Z]{3}`). Most restrictive. Rejects test-friendly fake codes if you ever want them.
+- **Alpha-only, length 3:** `[A-Za-z]{3}`, normalized to uppercase. Allows lowercase input but normalizes; rejects digits, punctuation, whitespace inside.
+- **Alpha-only, any length:** rejects punctuation/digits/whitespace; allows variable length. Lets you experiment with non-standard codes.
+
+Capture your decision in the **Decisions made** section above before starting Sub-step B. The middle option is the most natural default; the loose option is useful if you want flexibility for testing.
+
+#### Sub-step B — TDD `CurrencyCode`
+
+Same rhythm as Phase 1's Money TDD:
+
+1. Smoke test in a new `CurrencyCodeTests.cs`.
+2. Red: happy-path construction (`new CurrencyCode("USD")` produces a value with the expected `Value`).
+3. Green: minimal `CurrencyCode` (record with one property, no validation yet), inline in the test file.
+4. Red: normalization (`new CurrencyCode("usd")` produces `Value == "USD"`; `new CurrencyCode(" usd\t")` produces `Value == "USD"`).
+5. Green: trim + uppercase normalization.
+6. Red: invalid input throws (per Sub-step A decision — e.g., `new CurrencyCode("US|D")` throws).
+7. Green: add the validation.
+8. Refactor: extract `CurrencyCode` to `src/Ledger/CurrencyCode.cs`.
+
+`CurrencyCode` is a great candidate for `[Theory]` data — many valid inputs, many normalization cases, many invalid inputs. Use Steps 1-4 muscle memory.
+
+**Candidate tests** (Kent Beck's list — fill in / strike through as you go):
+
+- Valid: uppercase three-letter; lowercase three-letter; mixed case; whitespace-padded.
+- Invalid (per your rule): empty; null; whitespace-only; contains digit; contains punctuation; wrong length (if applicable); contains pipe.
+- Equality: `CurrencyCode("usd")` and `CurrencyCode("USD")` are equal (record equality + normalization).
+
+#### Sub-step C — Migrate `Money.Currency` to `CurrencyCode`
+
+In `src/Ledger/Money.cs`, change the second positional parameter from `string` to `CurrencyCode`. Remove the currency-normalization logic from `Money` — `CurrencyCode` owns it now.
+
+This breaks every test that constructs a `Money` with a string literal. Expected. Don't fix them yet — let the compiler inventory them for you.
+
+#### Sub-step D — Cascade through the test suite
+
+Work through the broken test sites. Each is mechanical: `new Money(amount, "USD")` → `new Money(amount, new CurrencyCode("USD"))`. Practical notes:
+
+- **Rider's "Show usages" (`Alt+F7`)** on `Money`'s constructor enumerates every call site. Faster than chasing compile errors one at a time.
+- **A test-only helper** (`static Money M(decimal amount, string code) => new(amount, new CurrencyCode(code))`) can shorten per-test churn but adds indirection. For one tutorial codebase, probably not worth it — explicit form is more honest. Decide after a few manual conversions tell you how the diff feels.
+- **`[Theory]` data sources need adjustment.** Columns that previously held `string` currency should become `CurrencyCode` — but `[InlineData]` can't carry a `CurrencyCode` (not a primitive). Two options: keep the column as `string` and construct in the test body, or move to `TheoryData<..., CurrencyCode>` with explicit construction in the data source. The latter is cleaner now that you have the type; this is one of the small wins of typing.
+- **`MoneyXunitSerializer` still functions** — `CurrencyCode`'s `Value` (or whatever you call its property) holds the same string the old format expected. The deserialize path will need updating in Sub-step E.
+
+#### Sub-step E — Simplify `MoneyXunitSerializer`
+
+After the cascade is green, revisit the serializer:
+
+- The `|` separator concern is now structurally impossible — `CurrencyCode` rejects pipes at construction. The original punch-list item to add a `|` guard in `Serialize` is no longer needed.
+- The deserialize path now constructs `new CurrencyCode(currencyString)` instead of using the raw string for `Money`'s second argument. If a deserialized currency string is malformed (corruption, format drift), `CurrencyCode`'s validation throws — *better* failure mode than the original silent-corruption bug.
+
+`CurrencyCode` may eventually want its own `IXunitSerializer` if you ever use it directly as a `[Theory]` parameter — but the round-trip through `Money` doesn't require one. Defer until you actually need it.
+
+#### Sub-step F — Resume the punch list
+
+Once the refactor is green and committed, resume the rest of the original Step 5 punch list:
+
+- `Deserialize` type validation (still wanted — symmetry with `IsSerializable`'s gates).
+- Folder reorganization (now against the post-refactor file layout).
+- Cosmetic cleanup (rename `actualObject`, `sealed`/`internal`, usings convergence, test naming).
+
+The `|` separator guard is off the list — the type system handles it.
 
 ### Step 6 — NUnit↔xUnit theories reflection  `[ ]`
 
