@@ -59,4 +59,12 @@ public class MoneyXunitSerializerTests
             () => Assert.StartsWith("Cannot serialize instances of decimal", 
                                     failureReason, StringComparison.OrdinalIgnoreCase));
     }
+
+    [Fact]
+    public void Deserialize_NonMoneyType_Throws()
+    {
+        var ex = Assert.Throws<ArgumentException>(() => _serializer.Deserialize(typeof(decimal), 
+                                                      "100|USD"));
+        Assert.Contains("decimal", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
 }

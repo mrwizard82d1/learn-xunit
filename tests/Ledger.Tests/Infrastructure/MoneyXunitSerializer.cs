@@ -43,6 +43,11 @@ public class MoneyXunitSerializer : IXunitSerializer
     }
     public object Deserialize(Type type, string serializedValue)
     {
+        if (!(type == typeof(Money)))
+        {
+            throw new ArgumentException($"Cannot deserialize to {type.Name}. Only `Money` is supported.");
+        }
+        
         var components = serializedValue.Split('|');
         var amount = decimal.Parse(components[0], CultureInfo.InvariantCulture);
         var currency = components[1];
