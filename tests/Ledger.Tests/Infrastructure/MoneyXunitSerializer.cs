@@ -37,7 +37,7 @@ public class MoneyXunitSerializer : IXunitSerializer
 
     public string Serialize(object value)
     {
-        ArgumentNullException.ThrowIfNull(value, nameof(value));
+        ArgumentNullException.ThrowIfNull(value);
         var actualObject = (Money)value;
         return $"{actualObject.Amount.ToString(CultureInfo.InvariantCulture)}|{actualObject.Currency}";
     }

@@ -24,6 +24,7 @@ Vehicle: refactor existing Phase 1 tests where the shape is "same logic, differe
 
 - (inherits Phase 1 and Phase 2 patterns)
 - **2026-05-28** — Refactored `Money.Currency` from `string` to a `CurrencyCode` value type during Step 5's punch list. Drove out of the `|` separator concern in `MoneyXunitSerializer`. See Step 5.5 for full rationale. The rest of the Step 5 punch list paused until the refactor lands.
+- **2026-06-01** — `CurrencyCode` validation rule: **alpha-only, length 3** (`[A-Za-z]{3}` accepted, normalized to uppercase). Picked over strict ISO 4217 (which would block fake test codes like `"FOO"`) and alpha-only-any-length (no real benefit; length-3 is a genuine domain constraint). Closes the `|` corruption path and every other punctuation/digit/whitespace path at construction.
 - *(add others as we go)*
 
 ---
