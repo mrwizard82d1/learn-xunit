@@ -315,6 +315,5 @@ In **Notes & questions** below, capture:
 
 ## Notes & questions
 
-_Fill in as you go._
-
+In step 3, I asked a question about the visibility of `Repository`. It was initially given `public` visibility, but Rider pointed out that it was not needed (yet). When I queried Claude, I understood that this decision was more a pedagogical decision than a design decision (and is **not** required - at least not at this time.) I put in comments describing the rationale for the decision for "future me."
 -

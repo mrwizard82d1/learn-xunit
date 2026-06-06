@@ -29,8 +29,15 @@ public class AccountQueryTests
     }
 }
 
-public class SeededAccountsFixture
+public sealed class SeededAccountsFixture
 {
+    // The `Repository` member is public. This choice is more pedagogical than
+    // required. One could probably encapsulate `Repository` and complete the
+    // tutorial with minor modifications. I've chosen to leave it `public`
+    // simply to move on with the goal: learning `xUnit`. This comment is a 
+    // reminder to "future me" that it may not be the most robust
+    // implementation.
+    // ReSharper disable once MemberCanBePrivate.Global
     public AccountRepository Repository { get; }
     public Account Checking { get; }
     public Account Savings { get; }
