@@ -50,7 +50,7 @@ public class AccountQueryTests
 
 Run. One green. This is the new test class; we'll grow it through the phase as the consumer of the fixture we're about to build.
 
-### Step 2 — Write tests that need pre-seeded state (without a fixture yet)  `[ ]`
+### Step 2 — Write tests that need pre-seeded state (without a fixture yet)  `[x]`
 
 Imagine you're writing tests for `AccountRepository.Get` and `AccountRepository.Contains` against a repository that already has accounts in it. The natural first instinct (from constructor-only-setup discipline) is to seed inside each test:
 
