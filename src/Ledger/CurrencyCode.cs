@@ -4,6 +4,8 @@ public record CurrencyCode(string Value)
 {
     public string Value { get; } = Normalize(Value);
 
+    public override string ToString() => Value;
+
     private static string Normalize(string value)
     {
         if (value is null)

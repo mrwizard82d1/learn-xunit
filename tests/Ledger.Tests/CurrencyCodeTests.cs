@@ -39,4 +39,12 @@ public class CurrencyCodeTests
         Assert.Throws<ArgumentException>(() => new CurrencyCode(input));
 #pragma warning restore CS8604 // Possible null reference argument.
     }
+
+    [Fact]
+    public void Construct_WithCurrencyCode_ToStringReturnCurrencyCodeValue()
+    {
+        var toTest = new CurrencyCode("QAR");
+        
+        Assert.Equal("QAR", toTest.Value);
+    }
 }

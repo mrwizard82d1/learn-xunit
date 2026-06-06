@@ -43,7 +43,7 @@ public class MoneyXunitSerializer : IXunitSerializer
     }
     public object Deserialize(Type type, string serializedValue)
     {
-        if (!(type == typeof(Money)))
+        if (type != typeof(Money))
         {
             throw new ArgumentException($"Cannot deserialize to {type.Name}. Only `Money` is supported.");
         }

@@ -3,8 +3,6 @@ namespace Ledger;
 
 public record Money(decimal Amount, CurrencyCode Currency)
 {
-    public CurrencyCode Currency { get; } = Currency;
-    
     public Money Add(Money addend2)
     {
         EnsureSameCurrency(addend2, "add");
