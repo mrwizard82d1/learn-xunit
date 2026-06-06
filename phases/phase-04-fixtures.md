@@ -109,7 +109,7 @@ A few principles to know now (they'll matter at scale):
 - **Expose what tests need as public properties.** Tests reach into the fixture through these — no magic, no service location, just object access.
 - **Fixtures should be read-only by the time tests see them.** Tests should *consume* the fixture's state, not mutate it. (More on this in Step 5.)
 
-### Step 4 — Wire `IClassFixture<T>` into the test class  `[ ]`
+### Step 4 — Wire `IClassFixture<T>` into the test class  `[x]`
 
 xUnit injects the fixture into the test class via constructor — same pattern you'd expect from a DI container, but built into the framework. Update `AccountQueryTests` to receive it:
 
@@ -316,4 +316,6 @@ In **Notes & questions** below, capture:
 ## Notes & questions
 
 In step 3, I asked a question about the visibility of `Repository`. It was initially given `public` visibility, but Rider pointed out that it was not needed (yet). When I queried Claude, I understood that this decision was more a pedagogical decision than a design decision (and is **not** required - at least not at this time.) I put in comments describing the rationale for the decision for "future me."
+
+In step 4, I observed a "gotcha": because a single instance of `SeededAccountsFixture` is injected into all tests because the test class inherits `IClassFixture<SeededAccountsFixture>`, I must be very aware of introducing "side-effects" into the implementation of this class (`SeededAccountsFixture`) which might change the test results.
 -
