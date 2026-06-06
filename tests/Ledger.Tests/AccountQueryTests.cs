@@ -1,6 +1,7 @@
 namespace Ledger.Tests;
 
-public class AccountQueryTests : IClassFixture<SeededAccountsFixture>
+[Collection("Seeded accounts")]
+public class AccountQueryTests
 {
     private readonly SeededAccountsFixture _fixture;
 
@@ -46,6 +47,13 @@ public class AccountQueryTests : IClassFixture<SeededAccountsFixture>
     }
 }
 
+[CollectionDefinition("Seeded accounts")]
+public class SeededAccountsCollection : ICollectionFixture<SeededAccountsFixture>
+{
+    // Intentionally empty. The marker exists only so xUnit can find the
+    // `[[CollectionDefinition]]` and its `ICollectionFixture<T>` declaration. 
+}
+
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class SeededAccountsFixture
 {
@@ -71,5 +79,28 @@ public sealed class SeededAccountsFixture
         Checking = Repository.OpenAccount(new Money(270.95M, new CurrencyCode("IRR")));
         Savings = Repository.OpenAccount(new Money(336.20M, new CurrencyCode("IRR")));
         Empty = Repository.OpenAccount(new Money(0M, new CurrencyCode("IRR")));
+    }
+}
+
+[Collection("Seeded accounts")]
+public class AccountInventoryTests
+{
+    private readonly SeededAccountsFixture _fixture;
+
+    // ReSharper disable once ConvertToPrimaryConstructor
+    public AccountInventoryTests(SeededAccountsFixture fixture)
+    {
+        _fixture = fixture;
+    }
+
+    [Fact]
+    public void SmokeTest() => Assert.Equal(4, 2 + 2);
+
+    [Fact]
+    public void Inventory_AfterSeeding_ContainsThreeAccounts()
+    {
+       Assert.True(_fixture.Repository.Contains(_fixture.Checking.Id)); 
+       Assert.True(_fixture.Repository.Contains(_fixture.Savings.Id)); 
+       Assert.True(_fixture.Repository.Contains(_fixture.Empty.Id)); 
     }
 }

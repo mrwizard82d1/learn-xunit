@@ -194,7 +194,7 @@ A more direct way to see it in action: set a breakpoint in the `SeededAccountsFi
 
 **Optional immutability discipline:** Mark fixture-held state as `init`-only or otherwise non-mutable from outside. If a test could call `_fixture.Repository.OpenAccount(...)`, that mutation persists across subsequent tests in the class — which is at best surprising and at worst a parallelism bug waiting to happen. For this fixture, you might decide to keep `Repository` mutable (it has to be — `OpenAccount` is how accounts get in) but treat the convention as "tests don't mutate the fixture." Documenting that intent with a comment on the property is reasonable.
 
-### Step 6 — Promote to `ICollectionFixture<T>` for cross-class sharing  `[ ]`
+### Step 6 — Promote to `ICollectionFixture<T>` for cross-class sharing  `[x]`
 
 `IClassFixture<T>` gives each *class* its own fixture instance. If two test classes both write `: IClassFixture<SeededAccountsFixture>`, they get **two different** SeededAccountsFixture instances — one per class. Fine if the work is cheap; wasteful if the work is genuinely expensive.
 
@@ -318,4 +318,27 @@ In **Notes & questions** below, capture:
 In step 3, I asked a question about the visibility of `Repository`. It was initially given `public` visibility, but Rider pointed out that it was not needed (yet). When I queried Claude, I understood that this decision was more a pedagogical decision than a design decision (and is **not** required - at least not at this time.) I put in comments describing the rationale for the decision for "future me."
 
 In step 4, I observed a "gotcha": because a single instance of `SeededAccountsFixture` is injected into all tests because the test class inherits `IClassFixture<SeededAccountsFixture>`, I must be very aware of introducing "side-effects" into the implementation of this class (`SeededAccountsFixture`) which might change the test results.
+
+In step 6, I discovered "interesting behavior." When I defined `SeededAccountsCollection`, I marked it with `
+[CollectionDefinition("Seeded accouns")]` (notice the typo). When I changed `AccountQueryTests` by removing the 
+inheritance from `IClassFixture<T>`, and annotating it with [Collection("Seeded accounts")] (notice the **correct** 
+but **different** spelling), Rider reported a **warning**: 
+
+> Fixture argument `fixture` does not have a fixture source...
+
+This warning dissappeared when I corrected the typo.
+
+Additionally in step 6, I found it difficult in Rider to stop on the initialization code. I recall that I used to right click on a line, select set breakpoint, and Rider would ask something like, "Where would you like to stop?" In the current version of Rider, execution stops at the `get` "function" - **twice**. (Actually, to be expected.) I had to "jump through hoops" to stop an the initialization code. It may be I have forgotten Rider features or need to set a property.
+
+**Claude's follow-up on the breakpoint observation:**
+
+If you ever do want to break on the getter (for some other property where the getter actually contains logic), you have a couple of options:
+
+- **Method breakpoint** via `Ctrl+Shift+F8` (IntelliJ keymap) → opens the Breakpoints dialog → "+" → "Method Breakpoint" → select the getter explicitly. Heavier-weight than a line breakpoint but it'll fire on every call.
+- **Refactor the auto-property to an explicit form** with a real getter body (`public Guid InstanceId { get { return _instanceId; } }`), then breakpoint inside the body. Useful for one-off debugging; revert when done.
+
+For an auto-property whose getter is "just return the field" (like `InstanceId`), neither of those is particularly useful — there's nothing interesting to break on in the getter anyway. The initializer is where the actual logic lives.
+
+**Not a Rider bug, but a sharp edge.** The "Set Breakpoint" dialog's appearance is heuristic, and Rider's heuristic for "should I ask?" doesn't fire on auto-property + initializer lines. If you want it to be more explicit in the future: `Ctrl+Shift+F8` on the line will always open the Breakpoints dialog, which lets you see exactly what got bound.
+
 -
