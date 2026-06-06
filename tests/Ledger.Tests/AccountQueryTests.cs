@@ -30,6 +30,8 @@ public class AccountQueryTests : IClassFixture<SeededAccountsFixture>
     [Fact]
     public void LifeCycle_PartOne_RecordsFixtureInstanceId()
     {
+        Console.WriteLine($"InstanceId: {_fixture.InstanceId}");
+        
         // No assertion. This test exists merely to demonstrate that the fixture
         // is shared with the `PartTwo` test.
         Assert.NotEqual(Guid.Empty, _fixture.InstanceId);
@@ -38,6 +40,8 @@ public class AccountQueryTests : IClassFixture<SeededAccountsFixture>
     [Fact]
     public void Lifecycle_PartTwo_SeesSameFixtureInstance()
     {
+        Console.WriteLine($"InstanceId: {_fixture.InstanceId}");
+        
         // This test is meaningful only in combination with `PartOne`: both
         // tests received the **same** fixture (and therefore the same
         // `InstanceId`), because `xUnit` instantiated `SeededAccountFixture`
