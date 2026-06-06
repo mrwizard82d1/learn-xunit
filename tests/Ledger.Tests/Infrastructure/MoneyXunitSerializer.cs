@@ -1,14 +1,16 @@
+using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
+
+using Xunit.Sdk;
+
 using Ledger;
 using Ledger.Tests.Infrastructure;
-[assembly: Xunit.Sdk.RegisterXunitSerializer(typeof(MoneyXunitSerializer), typeof(Money))]
+
+[assembly: RegisterXunitSerializer(typeof(MoneyXunitSerializer), typeof(Money))]
 
 namespace Ledger.Tests.Infrastructure;
 
-using System.Globalization;
-using System.Diagnostics.CodeAnalysis;
-using Xunit.Sdk;
-
-public class MoneyXunitSerializer : IXunitSerializer
+internal sealed class MoneyXunitSerializer : IXunitSerializer
 {
     public bool IsSerializable(Type type, object? value, [NotNullWhen(false)] out string? failureReason)
     {
@@ -38,8 +40,8 @@ public class MoneyXunitSerializer : IXunitSerializer
     public string Serialize(object value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        var actualObject = (Money)value;
-        return $"{actualObject.Amount.ToString(CultureInfo.InvariantCulture)}|{actualObject.Currency.Value}";
+        var money = (Money)value;
+        return $"{money.Amount.ToString(CultureInfo.InvariantCulture)}|{money.Currency.Value}";
     }
     public object Deserialize(Type type, string serializedValue)
     {

@@ -106,7 +106,7 @@ Mark phases with `[x]` as you complete them so the file becomes a record of what
 
 ---
 
-## Phase 3 — `[Theory]`, `[InlineData]`, `[MemberData]`, `[ClassData]`  `[ ]`
+## Phase 3 — `[Theory]`, `[InlineData]`, `[MemberData]`, `[ClassData]`  `[x]`
 
 **Goal:** Replace your `[TestCase]` muscle memory and pick the right data source for the job.
 

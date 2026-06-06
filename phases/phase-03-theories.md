@@ -166,7 +166,7 @@ public void Add_ProducesExpectedSum(decimal a, decimal b, decimal expectedSum, s
 
 For the Add cases in your Money suite, a static `TheoryData<...>` property is the right call. `[ClassData]` earns its keep at larger scale.
 
-### Step 5 — Theory case serialization: rules, `IXunitSerializer`, and Money-typed `TheoryData`  `[ ]`
+### Step 5 — Theory case serialization: rules, `IXunitSerializer`, and Money-typed `TheoryData`  `[x]`
 
 Step 4 left a question hanging: why does `TheoryData<Money, Money, Money>` produce a warning when `TheoryData<decimal, decimal, decimal, string>` doesn't? Answer: xUnit serializes each `[Theory]` case's arguments so the runner can give the case a stable identity and a readable display name. If a parameter type isn't serializable, that machinery breaks down.
 
@@ -426,6 +426,4 @@ In **Notes & questions** below, capture:
 
 ## Notes & questions
 
-_Fill in as you go._
-
--
+None that I remember.
