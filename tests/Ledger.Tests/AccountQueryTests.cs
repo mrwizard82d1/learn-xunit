@@ -26,11 +26,33 @@ public class AccountQueryTests : IClassFixture<SeededAccountsFixture>
     {
         Assert.True(_fixture.Repository.Contains(_fixture.Savings.Id));
     }
+
+    [Fact]
+    public void LifeCycle_PartOne_RecordsFixtureInstanceId()
+    {
+        // No assertion. This test exists merely to demonstrate that the fixture
+        // is shared with the `PartTwo` test.
+        Assert.NotEqual(Guid.Empty, _fixture.InstanceId);
+    }
+
+    [Fact]
+    public void Lifecycle_PartTwo_SeesSameFixtureInstance()
+    {
+        // This test is meaningful only in combination with `PartOne`: both
+        // tests received the **same** fixture (and therefore the same
+        // `InstanceId`), because `xUnit` instantiated `SeededAccountFixture`
+        // exactly once for the class.
+        Assert.NotEqual(Guid.Empty, _fixture.InstanceId);
+    }
 }
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class SeededAccountsFixture
 {
+    // Create an instance initialized when created. Prove that initialization 
+    // occurs exactly **once**.
+    public Guid InstanceId { get; } = Guid.NewGuid();
+    
     // The `Repository` member is public. This choice is more pedagogical than
     // required. One could probably encapsulate `Repository` and complete the
     // tutorial with minor modifications. I've chosen to leave it `public`

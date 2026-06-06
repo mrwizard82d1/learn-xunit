@@ -152,7 +152,7 @@ Run. All three tests still green. The change is invisible to the test runner; th
 
 **NUnit ↔ xUnit:** `[OneTimeSetUp]` (per-class) → `IClassFixture<T>` constructor. `[OneTimeTearDown]` → `IClassFixture<T>` implementing `IDisposable`. xUnit's choice of *constructor injection* over a sentinel method is the same philosophical move it made with `[SetUp]` → constructor: use the language's existing tools rather than inventing attributes.
 
-### Step 5 — Prove the lifecycle: one fixture, many test instances  `[ ]`
+### Step 5 — Prove the lifecycle: one fixture, many test instances  `[x]`
 
 Phase 2 had a similar demonstration for per-test isolation. The fixture version flips the lesson: the fixture is *shared*, and proving it requires showing the *same* instance is observed across tests.
 
