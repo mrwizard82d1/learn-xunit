@@ -39,7 +39,7 @@ public class MoneyXunitSerializer : IXunitSerializer
     {
         ArgumentNullException.ThrowIfNull(value);
         var actualObject = (Money)value;
-        return $"{actualObject.Amount.ToString(CultureInfo.InvariantCulture)}|{actualObject.Currency}";
+        return $"{actualObject.Amount.ToString(CultureInfo.InvariantCulture)}|{actualObject.Currency.Value}";
     }
     public object Deserialize(Type type, string serializedValue)
     {
@@ -50,7 +50,7 @@ public class MoneyXunitSerializer : IXunitSerializer
         
         var components = serializedValue.Split('|');
         var amount = decimal.Parse(components[0], CultureInfo.InvariantCulture);
-        var currency = components[1];
+        var currency = new CurrencyCode(components[1]);
         return new Money(amount, currency);
     }
 }

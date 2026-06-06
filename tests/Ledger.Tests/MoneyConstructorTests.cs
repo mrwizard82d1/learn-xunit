@@ -14,7 +14,7 @@ public class MoneyConstructorTests
     [InlineData(0.00)]
     public void Construct_WithAmount_MoneyHasAmount(decimal amount)
     {
-        var money = new Money(amount, "BBD");
+        var money = new Money(amount, new CurrencyCode("BBD"));
 
         Assert.Equal(amount, money.Amount);
     }
@@ -27,14 +27,8 @@ public class MoneyConstructorTests
     [InlineData(" Mnt\t", "MNT")]
     public void Construct_WithCurrency_MoneyHasNormalizedCurrency(string actualCurrency, string expectedCurrency)
     {
-        var money = new Money(849.92M, actualCurrency);
+        var money = new Money(849.92M, new CurrencyCode(actualCurrency));
 
-        Assert.Equal(expectedCurrency, money.Currency);
-    }
-
-    [Fact]
-    public void Construct_WithEmptyString_ThrowsArgumentException()
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Money(450.81M, ""));
+        Assert.Equal(expectedCurrency, money.Currency.Value);
     }
 }

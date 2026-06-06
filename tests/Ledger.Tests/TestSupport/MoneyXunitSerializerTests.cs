@@ -12,7 +12,7 @@ public class MoneyXunitSerializerTests
     [InlineData(0, "GGP")]
     public void Money_SerializeDeserialize_EqualsOriginalMoney(decimal amount, string currency)
     {
-        var expectedMoney =  new Money(amount, currency);
+        var expectedMoney =  new Money(amount, new CurrencyCode(currency));
         
         var actualMoney = 
             _serializer.Deserialize(typeof(Money), _serializer.Serialize(expectedMoney));
@@ -22,7 +22,7 @@ public class MoneyXunitSerializerTests
     [Fact]
     public void Money_IsSerializable_IsTrue()
     {
-        var someMoney = new Money(941.31M, "BTN");
+        var someMoney = new Money(941.31M, new CurrencyCode("BTN"));
         var isSerializable = _serializer.IsSerializable(someMoney.GetType(), someMoney, out var failureReason);
         Assert.Multiple(
             () => Assert.True(isSerializable),

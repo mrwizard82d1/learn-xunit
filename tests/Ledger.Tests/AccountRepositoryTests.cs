@@ -13,7 +13,7 @@ public class AccountRepositoryTests
     [Fact]
     public void OpenAccount_NoAccounts_AccountWithNewAccountIdExists()
     {
-        var initialBalance = new Money(508.84M, "eur");
+        var initialBalance = new Money(508.84M, new CurrencyCode("eur"));
 
         var newAccount = _repository.OpenAccount(initialBalance);
 
@@ -23,20 +23,20 @@ public class AccountRepositoryTests
     [Fact]
     public void OpenAccountWithInitialBalance_NoAccounts_OpenedAccountHasInitialBalance()
     {
-        var initialBalance = new Money(820.49M, "kmf");
+        var initialBalance = new Money(820.49M, new CurrencyCode("kmf"));
 
         var newAccount = _repository.OpenAccount(initialBalance);
 
-        Assert.Equal(new Money(820.49M, "kmf"), newAccount.Balance);
+        Assert.Equal(new Money(820.49M, new CurrencyCode ("kmf")), newAccount.Balance);
     }
 
     [Fact]
     public void OpenAccount_OneAccountExists_ReturnsDifferentAccounts()
     {
-        var firstAccountInitialBalance = new Money(973.85M, "mdl");
+        var firstAccountInitialBalance = new Money(973.85M, new CurrencyCode("mdl"));
         var firstAccount = _repository.OpenAccount(firstAccountInitialBalance);
 
-        var secondAccountInitialBalance = new Money(825.98M, "myr");
+        var secondAccountInitialBalance = new Money(825.98M, new CurrencyCode("myr"));
         var secondAccount = _repository.OpenAccount(secondAccountInitialBalance);
 
         Assert.NotEqual(firstAccount, secondAccount);
@@ -45,10 +45,10 @@ public class AccountRepositoryTests
     [Fact]
     public void OpenAccount_OneAccountExists_ReturnsAccountWithDifferentId()
     {
-        var firstAccountInitialBalance = new Money(768.77M, "tmt");
+        var firstAccountInitialBalance = new Money(768.77M, new CurrencyCode("tmt"));
         var firstAccount = _repository.OpenAccount(firstAccountInitialBalance);
 
-        var secondAccountInitialBalance = new Money(768.77M, "tmt");
+        var secondAccountInitialBalance = new Money(768.77M, new CurrencyCode("tmt"));
         var secondAccount = _repository.OpenAccount(secondAccountInitialBalance);
 
         Assert.NotEqual(firstAccount.Id, secondAccount.Id);
@@ -57,10 +57,10 @@ public class AccountRepositoryTests
     [Fact]
     public void OpenAccount_OneAccountExists_TwoAccountsWithDifferentIdsExist()
     {
-        var firstAccountInitialBalance = new Money(848.19M, "lsl");
+        var firstAccountInitialBalance = new Money(848.19M, new CurrencyCode("lsl"));
         var firstAccount = _repository.OpenAccount(firstAccountInitialBalance);
 
-        var secondAccountInitialBalance = new Money(402.84M, "xdr");
+        var secondAccountInitialBalance = new Money(402.84M, new CurrencyCode("xdr"));
         var secondAccount = _repository.OpenAccount(secondAccountInitialBalance);
 
         Assert.Multiple(
@@ -72,7 +72,7 @@ public class AccountRepositoryTests
     [Fact]
     public void GetAccount_AccountWithIdExists_ReturnsAccount()
     {
-        var initialBalance = new Money(848.19M, "lsl");
+        var initialBalance = new Money(848.19M, new CurrencyCode("lsl"));
         var addedAccount = _repository.OpenAccount(initialBalance);
 
         var foundAccount = _repository.Get(addedAccount.Id);
@@ -82,7 +82,7 @@ public class AccountRepositoryTests
     [Fact]
     public void Contains_AccountRepositoryDoesNotContainId_ReturnsFalse()
     {
-        var initialBalance = new Money(986.66M, "sos");
+        var initialBalance = new Money(986.66M, new CurrencyCode("sos"));
         _repository.OpenAccount(initialBalance);
 
         Assert.False(_repository.Contains("no-such-account"));
@@ -101,7 +101,7 @@ public class AccountRepositoryTests
     [Fact]
     public void Lifecycle_PartOne_OpensAccount()
     {
-        var account = _repository.OpenAccount(new Money(508.47M, "ang"));
+        var account = _repository.OpenAccount(new Money(508.47M, new CurrencyCode("ang")));
         Assert.True(_repository.Contains(account.Id));
     }
 
@@ -111,7 +111,7 @@ public class AccountRepositoryTests
         // If `PartOne` and `PartTwo` share the same `_repository` instance,
         // then repository counter would have advanced past "acc-1". If we get back
         // "acc-1", then each `[Fact]` is getting **its own** fresh instance of `AccountRepositoryTests`.
-        var account = _repository.OpenAccount(new Money(508.74M, "ang"));
+        var account = _repository.OpenAccount(new Money(508.74M, new CurrencyCode("ang")));
         Assert.Equal("acc-1", account.Id);
     }
 }

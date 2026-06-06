@@ -1,11 +1,9 @@
 
 namespace Ledger;
 
-public record Money(decimal Amount, string Currency)
+public record Money(decimal Amount, CurrencyCode Currency)
 {
-    public string Currency { get; } = (string.IsNullOrEmpty(Currency.Trim()) ? 
-        throw new ArgumentOutOfRangeException(nameof(Currency), "Currency must contain a value") : 
-        Currency.Trim().ToUpperInvariant()); 
+    public CurrencyCode Currency { get; } = Currency;
     
     public Money Add(Money addend2)
     {
