@@ -80,7 +80,7 @@ Run. Both green. Notice the duplication: every test re-builds the repository and
 
 This is the moment a fixture earns its keep. A fixture is xUnit's answer to "I want this setup to happen once and be reused, not redone per test."
 
-### Step 3 — Build `SeededAccountsFixture` (still inline)  `[ ]`
+### Step 3 — Build `SeededAccountsFixture` (still inline)  `[x]`
 
 Per the inline-then-extract pattern, sketch the fixture inside `AccountQueryTests.cs` before extracting:
 
