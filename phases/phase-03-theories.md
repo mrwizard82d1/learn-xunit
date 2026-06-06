@@ -313,7 +313,7 @@ How a parameter renders in the case name depends on its type's `ToString()` — 
 
 **NUnit ↔ xUnit:** NUnit auto-serializes test parameters by walking their public properties via reflection, which is why you've never had to think about this in NUnit. xUnit is more conservative on purpose — explicit beats magical when display names need to be stable across runs and processes. The cost is the occasional `IXunitSerializer` you have to write; the benefit is no surprises when complex types behave oddly in case identity.
 
-### Step 5.5 — REFACTOR: stringly-typed `Currency` → `CurrencyCode` value type  `[ ]`
+### Step 5.5 — REFACTOR: stringly-typed `Currency` → `CurrencyCode` value type  `[x]`
 
 #### Why this step exists
 

@@ -67,4 +67,12 @@ public class MoneyXunitSerializerTests
                                                       "100|USD"));
         Assert.Contains("decimal", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Fact]
+    public void Deserialize_WithMalformedCurrency_Throws()
+    {
+        var ex = Assert.Throws<ArgumentException>(() => _serializer.Deserialize(typeof(decimal), 
+                                                      "100|ER"));
+        Assert.Contains("decimal", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
 }
