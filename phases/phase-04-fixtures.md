@@ -276,7 +276,7 @@ A quick summary worth internalizing:
 
 The escalation order is per-test → per-class → per-collection → per-assembly, each step trading away isolation for sharing. Start at the lowest level that works; promote only when sharing is actually useful.
 
-### Step 8 — Refactor: extract the fixture (per the inline-then-extract pattern)  `[ ]`
+### Step 8 — Refactor: extract the fixture (per the inline-then-extract pattern)  `[x]`
 
 `SeededAccountsFixture` is currently inline in `AccountQueryTests.cs` (per Step 3). Now that you understand the shape and have a second class consuming it (Step 6), extract it to its own file.
 
