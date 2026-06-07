@@ -261,7 +261,7 @@ Run. All tests green. The breakpoint check from Step 5 still works: SeededAccoun
 
 **NUnit ↔ xUnit:** `[SetUpFixture]` (assembly-level, namespace-scoped) → `ICollectionFixture<T>` + `[CollectionDefinition]`. NUnit's mechanism is opt-out (a `[SetUpFixture]` runs for any class in its namespace); xUnit's is opt-in (each class names the collection explicitly). The xUnit form is more verbose but more honest — you can't accidentally inherit shared setup just by living in a namespace.
 
-### Step 7 — Decision table: which to reach for  `[ ]`
+### Step 7 — Decision table: which to reach for  `[x]`
 
 A quick summary worth internalizing:
 
