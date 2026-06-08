@@ -294,13 +294,28 @@ After extracting:
 
 Run the full suite. All tests stay green — pure structural refactor.
 
-### Step 9 — NUnit↔xUnit lifecycle reflection  `[ ]`
+### Step 9 — NUnit↔xUnit lifecycle reflection  `[x]`
 
 In **Notes & questions** below, capture:
 
 - How `IClassFixture<T>` compares to NUnit's `[OneTimeSetUp]` in terms of expressiveness. The xUnit form spreads the work across three pieces (fixture class + interface marker + constructor injection); NUnit's is a single attribute. What did you trade and what did you gain?
+
+  NUnit's `[OneTimeSetup]` is similar, but I can understand the value of spreading the work across three pieces. 
+  What I cannot recall is an occasion in which I thought, "I wish I could split this setup for more flexibility." I 
+  understand that not having "this move", it is very difficult to think of a time in which it is necessary.
+
+  Despite that misgiving, I am willing to put up with this "additional work". I believe I may come across an 
+  opportunity to extract value from this work. (I assume other people already have.)
+
 - Whether `[CollectionDefinition]` + `[Collection]` feels heavier than NUnit's `[SetUpFixture]`, and whether the explicitness pays off.
+
+  Similar comments to the previous question. Having a single attribute feels similar, and I do not recall having 
+  encountered a situation in which I thought, "I wish I could split this". However, I'm willing to "wait and see."
+
 - Any tests in your prior NUnit codebases where `[OneTimeSetUp]` was being abused as "shared mutable state" — and what xUnit's design would force you to do instead.
+
+  I do not recall a specific time; however, if I had encountered it, I think my first reaction would have been 
+  "That's not right. I need to avoid this shared mutable state before encountering the error."
 
 ---
 
