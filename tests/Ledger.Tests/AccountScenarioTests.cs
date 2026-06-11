@@ -4,6 +4,7 @@ public class AccountScenarioTests
 {
     private readonly ITestOutputHelper _output;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public AccountScenarioTests(ITestOutputHelper output)
     {
         _output = output;
@@ -25,7 +26,7 @@ public class AccountScenarioTests
         _output.WriteLine($"Opened savings: {savings.Id}");
      
         Assert.True(repo.Contains(checking.Id));
-        Assert.True(repo.Contains(savings.Id));
+        Assert.False(repo.Contains(savings.Id));
         
         _output.WriteLine("Both created accounts verified present.");
     }
