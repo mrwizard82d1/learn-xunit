@@ -91,23 +91,33 @@ Run. Both tests green. The new `[Fact]` produces output via `_output.WriteLine` 
 
 `ITestOutputHelper`'s API is small: just `WriteLine(string)` and a few overloads. There's no `Write` (no partial line) — each call is a complete line. The interface is in `Xunit` (not `Xunit.Sdk`), so no additional using is needed beyond what your test files already have.
 
-### Step 3 — Observe verbosity differences  `[ ]`
+### Step 3 — Observe output capture in action (and live-output's broken state)  `[x]`
 
-Run the suite at two verbosity levels and observe what's printed for the scenario test:
+Worth knowing up front: **the obvious flags for surfacing per-test output live during a passing run are broken in the xUnit v3 + MTP v2 + `dotnet test` combination as of mid-2026.** The flag your runner advertises in its `--help` output (variously documented as `--show-live-output`, `-show-output-live`) fails parsing on the actual command line — the help text and the parser disagree. Tracked as [xUnit issue #3468](https://github.com/xunit/xunit/issues/3468), closed as "External / not planned" — the team considers the root cause to live in `dotnet test` or the MTP v2 protocol bridge, not in xUnit itself.
 
-```
-dotnet test
-dotnet test --logger "console;verbosity=detailed"
-```
+The originally-instinctive `dotnet test --logger "console;verbosity=detailed"` is also wrong here — `--logger` is a VSTest concept and your runner is MTP. So neither the VSTest path nor the MTP path produces live `ITestOutputHelper` output for passing tests in your current toolchain.
 
-The default omits per-test output for *passing* tests. Detailed surfaces it. To verify output capture works when a test fails, deliberately flip an assertion in `OpenSeveralAccounts_QueryEach_AllPresent` (e.g., `Assert.False(repo.Contains(checking.Id))`), run, observe the `_output.WriteLine` lines in the failure block. Revert when done.
+**What does work — and what Step 3 actually verifies:**
 
-The defaults reflect different priorities:
+Confirm output capture via the deliberate-failure check. Flip an assertion in `OpenSeveralAccounts_QueryEach_AllPresent` to fail (e.g., `Assert.False(repo.Contains(checking.Id))`), run, observe the `_output.WriteLine` lines printed in the failure block, revert. This is runner-agnostic — xUnit unconditionally surfaces captured output on test failure regardless of MTP/VSTest/whatever. The capture mechanism is sound; only the live-during-passing-runs surface is broken.
 
-- **Quiet logs are CI-friendly** — successful runs produce minimal noise; failures get full diagnostic detail.
-- **Verbose logs help local triage** — you want to see what tests produced during normal exploration without artificially failing them.
+**Why "captured but invisible" is the intentional default (per [xUnit docs](https://xunit.net/docs/capturing-output)):**
 
-Knowing the flag exists is the practical bit. `xunit.runner.json` has settings that affect related behavior (`diagnosticMessages`, `internalDiagnosticMessages`) — Phase 8 explores these.
+> Live output can add significantly to the noise of the output when not needed. Users will turn this option on temporarily while debugging through particular issues rather than be something that's left on all the time.
+
+Steady state is "captured per test, surfaced on failure or via explicit opt-in." The opt-in being broken right now is annoying but not catastrophic — the diagnostic value of `ITestOutputHelper` is mostly in the failure path, where it works reliably.
+
+**Other paths investigated, for reference (none of these solve the live-output problem in our toolchain):**
+
+- `--show-live-output on` via `dotnet test` — fails: "unknown option."
+- `-show-output-live` (single dash, reversed name from the runner's own `--help` output) — fails: same "unknown option" error. Help text and parser disagree.
+- Running the test executable directly (`./tests/Ledger.Tests/bin/Debug/net10.0/Ledger.Tests --show-live-output on`) — same parser, same rejection. Bypassing `dotnet test` doesn't help.
+- `showLiveOutput: true` in `xunit.runner.json` — same underlying mechanism that the CLI flag would have invoked; same MTP v2 pipeline issue.
+- The `--diagnostic*` family of flags — these control xUnit's *internal* diagnostic logging (discovery, fixture lifecycle, parallelism decisions), not test-written output. Wrong tool for this need; don't spend cycles here.
+
+**Practical close:**
+
+Confirm output capture via the deliberate-failure check. Note the live-output limitation in your Notes & questions. We'll revisit `xunit.runner.json` configuration more broadly in Phase 8 — by then either the upstream situation may have changed, or we'll know more about which settings work end-to-end in MTP v2. Move on.
 
 ### Step 4 — Apply `[Trait]` to one smoke and demonstrate filtering  `[ ]`
 
@@ -259,6 +269,9 @@ In **Notes & questions** below, capture:
 
 ## Notes & questions
 
-_Fill in as you go._
+**Step 3 — Observe output capture in action (and live-output's broken state)  `[x]`**
 
--
+I tried several options to surface the output written using `ITestOutputHelper`. All of them were unsuccessful. 
+Perhaps one of the `--diagnostic-...` flags will allow me to see the ouptut later. Forcing a failure produces the 
+results that I expect, but it is far less useful than being able to turn diagnostic output on and off using a 
+command-line flag.
