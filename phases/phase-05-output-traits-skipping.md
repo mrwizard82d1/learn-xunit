@@ -46,7 +46,7 @@ public class AccountScenarioTests
 
 Run. One green.
 
-### Step 2 — Inject `ITestOutputHelper` and write a multi-step scenario  `[ ]`
+### Step 2 — Inject `ITestOutputHelper` and write a multi-step scenario  `[x]`
 
 xUnit injects `ITestOutputHelper` into the test class constructor automatically — same DI-via-constructor pattern as fixtures. Add the dependency:
 
