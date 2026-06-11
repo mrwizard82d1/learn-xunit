@@ -30,7 +30,7 @@ This phase mostly demonstrates patterns rather than driving design. Steps still 
 
 ## Steps
 
-### Step 1 — Per-class smoke for `AccountScenarioTests`  `[ ]`
+### Step 1 — Per-class smoke for `AccountScenarioTests`  `[x]`
 
 A new test class to host the ITestOutputHelper demonstration. Per the canary pattern:
 
