@@ -119,7 +119,7 @@ Steady state is "captured per test, surfaced on failure or via explicit opt-in."
 
 Confirm output capture via the deliberate-failure check. Note the live-output limitation in your Notes & questions. We'll revisit `xunit.runner.json` configuration more broadly in Phase 8 — by then either the upstream situation may have changed, or we'll know more about which settings work end-to-end in MTP v2. Move on.
 
-### Step 4 — Apply `[Trait]` to one smoke and demonstrate filtering  `[ ]`
+### Step 4 — Apply `[Trait]` to one smoke and demonstrate filtering  `[x]`
 
 `[Trait]` is a key-value tag you can put on any test method or test class. xUnit makes no assumptions about trait names — convention is yours to set.
 
@@ -131,23 +131,25 @@ A practical first application: tag a smoke test with `[Trait("Category", "Smoke"
 public void SmokeTest() => Assert.Equal(4, 2 + 2);
 ```
 
-Then run with the filter:
+Then run with the MTP-native filter. The `--` separator passes everything after it through to the test runner; `--filter` (with no separator) is a VSTest concept that doesn't exist in MTP — same VSTest-vs-MTP pattern you hit in Step 3 with `--show-live-output`.
 
 ```
-dotnet test --filter "Category=Smoke"
+dotnet test -- --filter-trait "Category=Smoke"
 ```
 
 You should see exactly **one** test run — the smoke you tagged. Every other test (including the other smokes you haven't tagged yet) is excluded.
 
-**Filter syntax** is documented as part of `vstest`'s expression grammar:
+**MTP filter family** (xUnit v3 exposes these as discrete flags rather than VSTest's single-string expression grammar):
 
-- `Category=Smoke` — exactly equal
-- `Category!=Smoke` — not equal
-- `Category=Smoke|Category=Fast` — OR (matches either)
-- `Category=Smoke&Owner=me` — AND (matches both)
-- `FullyQualifiedName~MoneyAdd` — substring match on test name
+- `--filter-trait "Category=Smoke"` / `--filter-not-trait "Category=Smoke"` — trait inclusion/exclusion
+- `--filter-class ClassName` / `--filter-not-class ClassName`
+- `--filter-method MethodName` / `--filter-not-method MethodName`
+- `--filter-namespace Namespace` / `--filter-not-namespace Namespace`
+- `--filter-query "<expression>"` — the [query filter language](https://xunit.net/docs/query-filter-language) for richer expressions (boolean combinators and more)
 
-The same syntax works in `dotnet test --filter`, in `vstest.console`, and in IDE test runners that consume vstest filters.
+For typical work, the discrete flags are the right tool. Reach for `--filter-query` only when you need composition the discrete flags can't express directly (e.g., "trait X AND method matching pattern Y but NOT in namespace Z").
+
+(If you're coming from VSTest's single-string `--filter "Category=Smoke|Owner=me"` grammar — boolean operators inside the filter expression — MTP's discrete-flag form looks unfamiliar but covers the same ground for common cases. Anything boolean moves to `--filter-query`.)
 
 **NUnit ↔ xUnit:** `[Category("Integration")]` → `[Trait("Category", "Integration")]`. NUnit's `[Category]` is single-valued; xUnit's `[Trait]` is key-value, which lets you tag along multiple orthogonal axes on the same test (e.g., a test could be `("Category", "Integration")` AND `("Owner", "billing-team")` AND `("Speed", "slow")`).
 
@@ -158,7 +160,7 @@ Tag every `SmokeTest()` method in every test class with `[Trait("Category", "Smo
 Once done:
 
 ```
-dotnet test --filter "Category=Smoke"
+dotnet test -- --filter-trait "Category=Smoke"
 ```
 
 …runs the full canary set. This becomes useful as:
@@ -169,7 +171,7 @@ dotnet test --filter "Category=Smoke"
 
 Other trait axes worth knowing about for later (don't add yet):
 
-- `[Trait("Category", "Slow")]` for tests >1s — `--filter "Category!=Slow"` for fast local runs.
+- `[Trait("Category", "Slow")]` for tests >1s — `-- --filter-not-trait "Category=Slow"` for fast local runs.
 - `[Trait("Category", "Integration")]` once integration tests exist (Phase 9).
 - `[Trait("Owner", "billing-team")]` if responsibility ownership matters in a larger team.
 
@@ -237,10 +239,10 @@ Behavior is the same as `[Fact(Skip = ...)]`: the test reports as Skipped with t
 Run with and without the `CI` environment variable set:
 
 ```
-dotnet test --filter "Name=EnvironmentSpecific_SkipsOutsideCi"
+dotnet test -- --filter-method "EnvironmentSpecific_SkipsOutsideCi"
 # Skipped: "This test only runs in CI..."
 
-CI=true dotnet test --filter "Name=EnvironmentSpecific_SkipsOutsideCi"
+CI=true dotnet test -- --filter-method "EnvironmentSpecific_SkipsOutsideCi"
 # Runs (and passes)
 ```
 
@@ -260,7 +262,7 @@ In **Notes & questions** below, capture:
 
 ## Stretch (optional)
 
-- **Read the [vstest filter syntax docs](https://learn.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests).** Boolean combinators, parentheses, and pattern-matching operators compose surprisingly expressive filters. Worth knowing when CI starts wanting "run tests in folder X but not those tagged Slow, and only if they belong to owner Y."
+- **Read the [xUnit Query Filter Language docs](https://xunit.net/docs/query-filter-language).** When the discrete `--filter-*` flags aren't enough, `--filter-query` gives you boolean combinators and richer matching expressions. Worth knowing when CI starts wanting "run tests in folder X but not those tagged Slow, and only if they belong to owner Y." (The corresponding VSTest filter syntax — single-string `--filter "..."` with `=`/`!=`/`|`/`&`/`~` operators — is documented [here](https://learn.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests) if you ever need to translate between the two grammars.)
 - **`xunit.runner.json` output and diagnostic settings**: explore `methodDisplay`, `methodDisplayOptions`, `diagnosticMessages`, `internalDiagnosticMessages`. Small knobs that change how Rider and CLI runners display test results. We'll come back to this in Phase 8.
 - **Capture output from a *failing* test under `dotnet test`** and observe that it prints only on failure by default — a deliberate signal-to-noise choice. Compare to Rider's behavior of always showing output. Both are defensible; knowing the difference saves confusion when results "look different" between local and CI runs.
 - **A custom `ITraitDiscoverer`** — write a tiny one that derives traits from test method naming conventions (e.g., any method whose name starts with `Smoke_` automatically gets `Category=Smoke`). Niche, but a good window into xUnit's extension points.
